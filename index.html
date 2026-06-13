@@ -9,7 +9,7 @@
     
     <style>
         :root {
-            --primary: #e67e22; /* Arancione dorato (colore del fritto perfetto) */
+            --primary: #e67e22; /* Arancione dorato fritto */
             --dark: #2c3e50;
             --light: #f8f9fa;
             --text: #333;
@@ -27,10 +27,10 @@
             color: var(--text);
         }
 
-        /* Header e Navigazione */
+        /* Header fisso */
         header {
             background-color: #fff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -47,103 +47,100 @@
 
         .logo {
             font-family: 'Playfair Display', serif;
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 800;
             color: var(--primary);
             text-decoration: none;
         }
 
-        nav a {
-            text-decoration: none;
-            color: var(--dark);
+        .cart-trigger {
+            background: var(--dark);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
             font-weight: 600;
-            margin-left: 20px;
             cursor: pointer;
-            transition: color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
         }
 
-        nav a:hover, nav a.active {
-            color: var(--primary);
-        }
-
-        .cart-icon-nav {
-            position: relative;
+        .cart-trigger:hover {
+            background: var(--primary);
         }
 
         .cart-badge {
-            position: absolute;
-            top: -10px;
-            right: -10px;
             background: red;
             color: white;
             border-radius: 50%;
-            padding: 2px 6px;
+            padding: 2px 8px;
             font-size: 12px;
         }
 
-        /* Sezioni Pagine */
-        .page {
-            display: none;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        .page.active {
-            display: block;
-        }
-
-        /* Pagina Presentazione */
+        /* Sezione Presentazione (Hero) */
         .hero {
+            max-width: 1200px;
+            margin: 20px auto 40px auto;
             text-align: center;
             padding: 60px 20px;
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=1200&q=80') center/cover;
+            background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80') center/cover;
             color: white;
             border-radius: 15px;
-            margin-bottom: 40px;
         }
 
         .hero h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 48px;
-            margin-bottom: 15px;
+            font-size: 42px;
+            margin-bottom: 10px;
         }
 
-        .info-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
+        .hero p {
+            font-size: 16px;
+            max-width: 700px;
+            margin: 0 auto 20px auto;
+            opacity: 0.95;
+            line-height: 1.6;
         }
 
-        .info-card {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            text-align: center;
-        }
-
-        .info-card i {
-            font-size: 40px;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        /* Pagina Menu */
-        .menu-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 36px;
-            text-align: center;
-            margin-bottom: 30px;
-            color: var(--dark);
-        }
-
-        .menu-categories {
+        .features {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .features span {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Sezione Menù Principale */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 60px 20px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--dark);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        /* Categorie Filtro */
+        .categories-bar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 35px;
             flex-wrap: wrap;
         }
 
@@ -151,8 +148,8 @@
             background: #fff;
             border: 2px solid var(--primary);
             color: var(--primary);
-            padding: 8px 20px;
-            border-radius: 20px;
+            padding: 8px 22px;
+            border-radius: 25px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s;
@@ -163,24 +160,30 @@
             color: #fff;
         }
 
+        /* Griglia dei Prodotti */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
+            gap: 30px;
         }
 
         .product-card {
             background: white;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
         }
 
         .product-info {
-            padding: 20px;
+            padding: 22px;
         }
 
         .product-title {
@@ -191,10 +194,11 @@
         }
 
         .product-desc {
-            font-size: 14px;
-            color: #777;
-            margin-bottom: 15px;
-            height: 42px;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            height: 60px;
             overflow: hidden;
         }
 
@@ -205,27 +209,27 @@
         }
 
         .product-price {
-            font-size: 18px;
+            font-size: 19px;
             font-weight: 600;
             color: var(--primary);
         }
 
-        .add-to-cart-btn {
+        .add-btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
+            padding: 8px 18px;
+            border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
             transition: background 0.2s;
         }
 
-        .add-to-cart-btn:hover {
+        .add-btn:hover {
             background: #d35400;
         }
 
-        /* Carrello (Sidebar) */
+        /* Carrello Separato (Sidebar) */
         .cart-sidebar {
             position: fixed;
             top: 0;
@@ -239,7 +243,7 @@
             transition: right 0.3s ease;
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            padding: 25px;
         }
 
         .cart-sidebar.open {
@@ -250,13 +254,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--light);
+            border-bottom: 2px solid #f1f1f1;
             padding-bottom: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
 
         .close-cart {
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
             color: var(--dark);
         }
@@ -270,41 +274,57 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 1px solid var(--light);
+            border-bottom: 1px solid #f8f9fa;
         }
 
         .cart-item-details h4 {
             font-size: 14px;
             color: var(--dark);
+            margin-bottom: 4px;
         }
 
         .cart-item-controls {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .cart-item-controls button {
             background: var(--light);
             border: none;
-            padding: 5px 10px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
             cursor: pointer;
             font-weight: bold;
+            font-size: 16px;
         }
 
         .cart-footer {
-            border-top: 2px solid var(--light);
-            padding-top: 15px;
+            border-top: 2px solid #f1f1f1;
+            padding-top: 20px;
+        }
+
+        .cart-notes {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            resize: none;
+            font-family: inherit;
+            font-size: 13px;
         }
 
         .cart-total {
             display: flex;
             justify-content: space-between;
-            font-size: 18px;
+            font-size: 19px;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            color: var(--dark);
         }
 
         .whatsapp-btn {
@@ -313,11 +333,12 @@
             background: #25D366;
             color: white;
             text-align: center;
-            padding: 12px;
+            padding: 14px;
             border-radius: 8px;
             text-decoration: none;
             font-weight: bold;
             font-size: 16px;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
             transition: background 0.2s;
         }
 
@@ -340,20 +361,10 @@
             display: block;
         }
 
-        /* Note Utente nel Carrello */
-        .cart-notes {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            resize: none;
-            font-family: inherit;
-        }
-
         @media (max-width: 768px) {
             .hero h1 { font-size: 32px; }
-            .nav-container { padding: 15px; }
+            .hero p { font-size: 14px; }
+            .features { gap: 10px; }
         }
     </style>
 </head>
@@ -361,62 +372,36 @@
 
     <header>
         <div class="nav-container">
-            <a href="#" class="logo" onclick="switchPage('presentazione')">Da Mario</a>
-            <nav>
-                <a id="nav-presentazione" class="active" onclick="switchPage('presentazione')">Chi Siamo</a>
-                <a id="nav-menu" onclick="switchPage('menu')">Il Menù</a>
-                <a onclick="toggleCart()" class="cart-icon-nav">
-                    <i class="fas fa-shopping-basket"></i>
-                    <span class="cart-badge" id="cart-badge">0</span>
-                </a>
-            </nav>
+            <a href="#" class="logo">Da Mario</a>
+            <button class="cart-trigger" onclick="toggleCart()">
+                <i class="fas fa-shopping-basket"></i> Carrello
+                <span class="cart-badge" id="cart-badge">0</span>
+            </button>
         </div>
     </header>
 
-    <section id="presentazione-page" class="page active">
-        <div class="hero">
-            <h1>Gastronomia & Friggitoria Da Mario</h1>
-            <p>L'arte del fritto dorato e della buona cucina tradizionale, direttamente a casa tua.</p>
-        </div>
-        
-        <div style="text-align: center; max-width: 800px; margin: 0 auto;">
-            <h2 style="font-family: 'Playfair Display', serif; margin-bottom: 15px;">La Nostra Passione</h2>
-            <p style="color: #666; line-height: 1.8;">Da Mario, la friggitoria non è solo un mestiere, è una tradizione di famiglia. Selezioniamo quotidianamente le migliori materie prime, usiamo solo oli di altissima qualità per garantire una frittura leggera, croccante e digeribile. Dalla classica frittatina di pasta alle nostre teglie di gastronomia artigianale, ogni boccone racconta la nostra storia.</p>
-            <button class="add-to-cart-btn" style="margin-top: 20px; padding: 12px 30px; font-size: 16px;" onclick="switchPage('menu')">Sfoglia il Menù</button>
-        </div>
-
-        <div class="info-section">
-            <div class="info-card">
-                <i class="fas fa-utensils"></i>
-                <h3>Cucina Espressa</h3>
-                <p>I nostri fritti vengono preparati e cucinati al momento per garantirti il massimo della fragranza.</p>
-            </div>
-            <div class="info-card">
-                <i class="fas fa-leaf"></i>
-                <h3>Ingredienti Top</h3>
-                <p>Solo olio ad alto punto di fumo, verdure fresche di stagione e carni certificate.</p>
-            </div>
-            <div class="info-card">
-                <i class="fas fa-clock"></i>
-                <h3>Ordina e Ritira</h3>
-                <p>Scegli dal menù, invia l'ordine su WhatsApp e salta la fila al momento del ritiro!</p>
-            </div>
+    <section class="hero">
+        <h1>Gastronomia & Friggitoria Da Mario</h1>
+        <p>L'autentica tradizione culinaria e l'arte del fritto dorato. Prepariamo ogni piatto con ingredienti freschi selezionati e una passione artigianale che si sente in ogni morso.</p>
+        <div class="features">
+            <span><i class="fas fa-fire"></i> Frittura Espressa</span>
+            <span><i class="fas fa-leaf"></i> Ingredienti Selezionati</span>
+            <span><i class="fas fa-bolt"></i> Ordina via WhatsApp</span>
         </div>
     </section>
 
-    <section id="menu-page" class="page">
-        <h2 class="menu-title">Il Nostro Menù Artigianale</h2>
+    <main class="main-container">
+        <h2 class="section-title">Scegli e Ordina</h2>
         
-        <div class="menu-categories">
-            <button class="category-btn active" onclick="filterCategory('all', this)">Tutto</button>
-            <button class="category-btn" onclick="filterCategory('fritti', this)">I Fritti</button>
-            <button class="category-btn" onclick="filterCategory('gastronomia', this)">Gastronomia</button>
+        <div class="categories-bar">
+            <button class="category-btn active" onclick="filterCategory('all', this)">Tutto il Menù</button>
+            <button class="category-btn" onclick="filterCategory('fritti', this)">I Fritti d'Autore</button>
+            <button class="category-btn" onclick="filterCategory('gastronomia', this)">La Gastronomia</button>
             <button class="category-btn" onclick="filterCategory('bevande', this)">Bevande</button>
         </div>
 
-        <div class="products-grid" id="products-container">
-            </div>
-    </section>
+        <div class="products-grid" id="products-container"></div>
+    </main>
 
     <div class="overlay" id="overlay" onclick="toggleCart()"></div>
     <div class="cart-sidebar" id="cart-sidebar">
@@ -429,7 +414,7 @@
             </div>
 
         <div class="cart-footer">
-            <textarea class="cart-notes" id="order-notes" rows="2" placeholder="Note (es. Orario di ritiro, allergie...)"></textarea>
+            <textarea class="cart-notes" id="order-notes" rows="2" placeholder="Note (es. orario di ritiro, allergie, asporto...)"></textarea>
             <div class="cart-total">
                 <span>Totale:</span>
                 <span id="cart-total-price">€0.00</span>
@@ -441,56 +426,46 @@
     </div>
 
     <script>
-        // Configurazione del tuo numero WhatsApp (Inserisci il prefisso internazionale, es. 39 per Italia + numero)
-        const WHATSAPP_NUMBER = "393331234567"; 
+        // Sostituisci con il tuo vero numero WhatsApp completo di prefisso 39 (senza il +)
+        const WHATSAPP_NUMBER = "393381412337"; 
 
-        // Database dei 20 prodotti (ispirati a qualità tipo Da Mario)
+        // 20 Prodotti d'eccellenza ispirati alla gastronomia "Da Mario"
         const products = [
-            // I FRITTI (11 prodotti)
-            { id: 1, name: "Cuoppo Classico Napoletano", price: 8.50, category: "fritti", desc: "Arancini, crocchette, zeppoline e verdure in pastella sfiziosissime." },
-            { id: 2, name: "Arancino al Ragù Espresso", price: 3.50, category: "fritti", desc: "Riso allo zafferano, ragù artigianale home-made e cuore di provola." },
-            { id: 3, name: "Crocchè di Patate e Provola", price: 2.50, category: "fritti", desc: "Patate fresche schiacciate a mano, prezzemolo e provola filante." },
-            { id: 4, name: "Frittatina di Pasta Classica", price: 3.50, category: "fritti", desc: "Bucatini conditi con besciamella, carne macinata, piselli e provola." },
-            { id: 5, name: "Supplì al Telefono Romano", price: 3.00, category: "fritti", desc: "Riso al pomodoro romano con cuore di mozzarella filante." },
-            { id: 6, name: "Olive Ascolane Artigianali (6pz)", price: 5.00, category: "fritti", desc: "Olive denocciolate ripiene di carne mista speziata e fritte." },
-            { id: 7, name: "Fiori di Zucca in Pastella (2pz)", price: 4.50, category: "fritti", desc: "Ripieni di ricotta fresca campana e alice, fritti in pastella leggera." },
-            { id: 8, name: "Mozzarelline fritte dorate (6pz)", price: 4.50, category: "fritti", desc: "Ciliegine di latte intero con doppia panatura super croccante." },
-            { id: 9, name: "Cuoppo di Calamari e Totani", price: 12.00, category: "fritti", desc: "Anelli di totano e calamari locali infarinati e fritti all'istante." },
-            { id: 10, name: "Patatine Fritte Taglio Fresco", price: 4.00, category: "fritti", desc: "Patate olandesi fresche tagliate a mano e fritte al momento." },
-            { id: 11, name: "Montanara Fritta e Al Forno", price: 3.50, category: "fritti", desc: "Pizzetta fritta condita con passata San Marzano, parmigiano e basilico." },
+            // I FRITTI D'AUTORE (10 prodotti)
+            { id: 1, name: "Cuoppo di Fritti Speciale 'Da Mario'", price: 9.00, category: "fritti", desc: "Un mix croccante con mini-arancini, crocchè artigianali, zeppoline di pasta cresciuta e verdurine in pastella." },
+            { id: 2, name: "Frittatina di Bucatini Classica", price: 3.50, category: "fritti", desc: "Bucatini legati da vellutata besciamella, cuore di carne macinata scelta, piselli e provola filante." },
+            { id: 3, name: "Crocchè di Patate con Provola di Agerola", price: 2.50, category: "fritti", desc: "Patate fresche locali schiacciate a mano, prezzemolo, pepe e un cuore generoso di provola filante." },
+            { id: 4, name: "Arancino Siciliano al Ragù Antico", price: 3.50, category: "fritti", desc: "Riso allo zafferano con un ricco ripieno di ragù cotto a fuoco lento per 6 ore, piselli e mozzarella." },
+            { id: 5, name: "Supplì al Telefono Romano", price: 2.80, category: "fritti", desc: "Il classico romano: riso cotto nel sugo di pomodoro con una striscia di fior di latte filante al centro." },
+            { id: 6, name: "Frittatina Cacio, Pepe e Pancetta", price: 3.80, category: "fritti", desc: "Variante gourmet della frittatina classica, con pecorino romano DOP, pepe nero macinato fresco e pancetta croccante." },
+            { id: 7, name: "Fiori di Zucca Ripieni (2pz)", price: 4.50, category: "fritti", desc: "Fiori di zucca freschi ripieni di ricotta di bufala campana e un tocco di alice di Cetara, in pastella leggera." },
+            { id: 8, name: "Montanarina Classica al Pomodoro", price: 3.00, category: "fritti", desc: "Pizzetta fritta dorata condita in superficie con passata di pomodoro San Marzano, parmigiano e basilico fresco." },
+            { id: 9, name: "Mozzarelline fritte dorate (6pz)", price: 5.00, category: "fritti", desc: "Bocconcini di latte intero con una speciale doppia panatura croccante fuori e un cuore morbidissimo." },
+            { id: 10, name: "Cuoppo di Calamari Spillo", price: 13.00, category: "fritti", desc: "Calamaretti finissimi infarinati e fritti al momento, serviti asciutti e croccanti con uno spicchio di limone." },
             
-            // GASTRONOMIA (6 prodotti)
-            { id: 12, name: "Lasagna Tradizionale al Forno", price: 9.00, category: "gastronomia", desc: "Sfoglia all'uovo, ragù lento 6 ore, besciamella e mozzarella." },
-            { id: 13, name: "Parmigiana di Melanzane", price: 8.00, category: "gastronomia", desc: "Melanzane fritte, fior di latte, tanto basilico e sugo di pomodoro." },
-            { id: 14, name: "Polpette della Nonna al Sugo (4pz)", price: 7.50, category: "gastronomia", desc: "Misto manzo e maiale morbide, affogate nel sugo di pomodoro." },
-            { id: 15, name: "Pollo allo Spiedo con Patate", price: 13.50, category: "gastronomia", desc: "Pollo intero speziato alle erbe con generosa porzione di patate al forno." },
-            { id: 16, name: "Roast Beef in Salsa Citronette", price: 10.00, category: "gastronomia", desc: "Fette sottili di sottofesa di scottona cotta all'inglese (porzione)." },
-            { id: 17, name: "Verdure Grigliate di Stagione", price: 5.00, category: "gastronomia", desc: "Zucchine, melanzane e peperoni conditi con olio all'aglio e mentuccia." },
+            // LA GASTRONOMIA (7 prodotti)
+            { id: 11, name: "Lasagna Tradizionale della Casa", price: 9.50, category: "gastronomia", desc: "Sfoglia all'uovo artigianale, ricco ragù della tradizione, besciamella setosa e crosticina di parmigiano al forno." },
+            { id: 12, name: "Parmigiana di Melanzane Napoletana", price: 8.50, category: "gastronomia", desc: "Melanzane fritte, stratificate con sugo di pomodoro fresco, fior di latte, tanto basilico e parmigiano grattugiato." },
+            { id: 13, name: "Polpette della Nonna al Sugo (4pz)", price: 8.00, category: "gastronomia", desc: "Polpette morbide di manzo e maiale fatte a mano, affogate nella nostra salsa di pomodoro San Marzano." },
+            { id: 14, name: "Pollo allo Spiedo Campese con Erbe", price: 14.00, category: "gastronomia", desc: "Pollo intero allevato all'aperto, marinato con erbe aromatiche fresche, cotto lentamente allo spiedo, succoso dentro." },
+            { id: 15, name: "Patate al Forno Profumate al Rosmarino", price: 4.50, category: "gastronomia", desc: "Il contorno perfetto: patate nostrane dorate al forno con olio EVO, aglio in camicia e rosmarino fresco." },
+            { id: 16, name: "Frittata di Maccheroni (Porzione)", price: 5.00, category: "gastronomia", desc: "La classica frittata di pasta alta e saporita, preparata con uova fresche, salame tipo Napoli, provola e pepe." },
+            { id: 17, name: "Salsiccia e Friarielli Sauté", price: 9.00, category: "gastronomia", desc: "Tipica combinazione campana: salsiccia di maiale a punta di coltello accompagnata da friarielli saltati con aglio e peperoncino." },
 
             // BEVANDE (3 prodotti)
-            { id: 18, name: "Birra Artigianale Locale 33cl", price: 4.50, category: "bevande", desc: "Birra bionda artigianale, fresca e perfetta per accompagnare il fritto." },
-            { id: 19, name: "Bibita in Lattina (Coca/Fanta) 33cl", price: 2.50, category: "bevande", desc: "Servita fredda da frigorifero." },
-            { id: 20, name: "Acqua Minerale Naturale/Frizzante", price: 1.50, category: "bevande", desc: "Bottiglia in formato da 50cl." }
+            { id: 18, name: "Birra Artigianale 'Da Mario' 33cl", price: 5.00, category: "bevande", desc: "Birra bionda artigianale leggera e rinfrescante, studiata appositamente per sgrassare la bocca dopo il fritto." },
+            { id: 19, name: "Bibita in Lattina 33cl (Coca-Cola/Fanta)", price: 2.50, category: "bevande", desc: "Servita ghiacciata da frigorifero." },
+            { id: 20, name: "Acqua Minerale 50cl (Naturale/Frizzante)", price: 1.50, category: "bevande", desc: "Bottiglia in plastica, fresca di frigo." }
         ];
 
         let cart = {};
 
-        // Inizializzazione della pagina e del rendering prodotti
+        // Avvio automatico al caricamento della pagina
         document.addEventListener("DOMContentLoaded", () => {
             renderProducts(products);
         });
 
-        // Cambio pagina fluido
-        function switchPage(pageId) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-            
-            document.getElementById(`${pageId}-page`).classList.add('active');
-            document.getElementById(`nav-${pageId}`)?.classList.add('active');
-            window.scrollTo(0,0);
-        }
-
-        // Render dei prodotti nella griglia
+        // Mostra i prodotti nella griglia
         function renderProducts(productsList) {
             const container = document.getElementById('products-container');
             container.innerHTML = '';
@@ -504,7 +479,7 @@
                         <div class="product-desc">${p.desc}</div>
                         <div class="product-footer">
                             <div class="product-price">€${p.price.toFixed(2)}</div>
-                            <button class="add-to-cart-btn" onclick="addToCart(${p.id})">Aggiungi</button>
+                            <button class="add-btn" onclick="addToCart(${p.id})">Aggiungi</button>
                         </div>
                     </div>
                 `;
@@ -512,7 +487,7 @@
             });
         }
 
-        // Filtro categorie menù
+        // Filtro categorie pulsanti
         function filterCategory(category, button) {
             document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
@@ -525,13 +500,12 @@
             }
         }
 
-        // Gestione apertura/chiusura carrello
+        // Sidebar carrello
         function toggleCart() {
             document.getElementById('cart-sidebar').classList.toggle('open');
             document.getElementById('overlay').classList.toggle('open');
         }
 
-        // Logica del carrello
         function addToCart(productId) {
             if (cart[productId]) {
                 cart[productId]++;
@@ -585,12 +559,12 @@
             document.getElementById('cart-total-price').innerText = `€${total.toFixed(2)}`;
         }
 
-        // Integrazione API WhatsApp per l'invio dell'ordine
+        // Invio dei dati via WhatsApp
         function sendWhatsAppOrder(event) {
             event.preventDefault();
             
             if (Object.keys(cart).length === 0) {
-                alert("Il tuo carrello è vuoto! Aggiungi qualche prelibatezza prima di ordinare.");
+                alert("Il tuo carrello è vuoto! Scegli qualcosa dal menù prima di inviare l'ordine.");
                 return;
             }
 
@@ -608,16 +582,14 @@
 
             const notes = document.getElementById('order-notes').value.trim();
             if (notes) {
-                message += `\n*Note dell'ordine:* _${notes}_\n`;
+                message += `\n*Note cliente:* _${notes}_\n`;
             }
 
-            message += `\n*TOTALE DA CORRISPONDERE:* €${total.toFixed(2)}`;
+            message += `\n*TOTALE ORDINE:* €${total.toFixed(2)}`;
             
-            // Codifica il testo per l'URL di WhatsApp
             const encodedMessage = encodeURIComponent(message);
             const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
             
-            // Apre WhatsApp in una nuova scheda
             window.open(whatsappUrl, '_blank');
         }
     </script>
