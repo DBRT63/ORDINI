@@ -28,7 +28,7 @@
             color: var(--text);
         }
 
-        /* HEADER FISSO */
+        /* HEADER */
         header {
             background-color: #fff;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -151,7 +151,7 @@
         .main-container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px 60px 20px;
+            padding: 0 20px 40px 20px;
         }
 
         .section-title {
@@ -454,6 +454,30 @@
             display: block;
         }
 
+        /* FOOTER */
+        .footer {
+            max-width: 1200px;
+            margin: 0 auto 30px auto;
+            padding: 20px;
+            text-align: center;
+            border-top: 2px solid #e9ecef;
+        }
+        .footer .home-btn-large {
+            display: inline-block;
+            background: var(--primary);
+            color: #fff;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 16px;
+            transition: background 0.3s;
+            box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3);
+        }
+        .footer .home-btn-large:hover {
+            background: #d35400;
+        }
+
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 32px;
@@ -481,6 +505,7 @@
 </head>
 <body>
 
+    <!-- HEADER -->
     <header>
         <div class="nav-container">
             <a href="#" class="logo">Da Mario</a>
@@ -496,6 +521,7 @@
         </div>
     </header>
 
+    <!-- HERO -->
     <section class="hero">
         <h1>Gastronomia & Friggitoria Da Mario</h1>
         <p>L'autentica tradizione culinaria e l'arte del fritto dorato. Prepariamo ogni piatto con ingredienti freschi selezionati e una passione artigianale che si sente in ogni morso.</p>
@@ -506,6 +532,7 @@
         </div>
     </section>
 
+    <!-- MAIN -->
     <main class="main-container">
         <h2 class="section-title">Scegli e Ordina</h2>
 
@@ -521,9 +548,17 @@
         <div class="products-grid" id="products-container"></div>
     </main>
 
+    <!-- FOOTER con pulsante Home -->
+    <footer class="footer">
+        <a href="https://www.damario.art" target="_blank" class="home-btn-large">
+            <i class="fas fa-home"></i> Torna alla Home
+        </a>
+    </footer>
+
+    <!-- OVERLAY -->
     <div class="overlay" id="overlay" onclick="toggleCart()"></div>
 
-    <!-- SIDEBAR CARRETTO CON FORM -->
+    <!-- SIDEBAR CARRETTO -->
     <div class="cart-sidebar" id="cart-sidebar">
         <div class="cart-header">
             <h3>Il Tuo Ordine</h3>
@@ -577,7 +612,7 @@
 
     <script>
         // ============================
-        // 1. DATI DEL MENÙ (Italiano / Inglese)
+        // 1. DATI DEL MENÙ (Italiano / Inglese) - AGGIUNTA PATATINE FRITTE
         // ============================
         const products = [
             // GASTRONOMIA
@@ -638,7 +673,7 @@
                 descEn: "Spaghetti with mussels, clams, shrimp and calamari."
             },
 
-            // SECONDI PIATTI
+            // SECONDI PIATTI (aggiunta patatine fritte)
             {
                 id: 7,
                 nameIt: "Gran fritto",
@@ -661,7 +696,7 @@
                 id: 9,
                 nameIt: "Frittura mista di paranza",
                 nameEn: "Mixed Paranza Fried Fish",
-                price: 14.00,
+                price: 13.00,
                 category: "secondi",
                 descIt: "Pesce azzurro misto fritto.",
                 descEn: "Mixed small fried fish."
@@ -710,6 +745,16 @@
                 category: "secondi",
                 descIt: "Crocchette di patate croccanti fuori e morbide dentro.",
                 descEn: "Crispy on the outside, soft on the inside potato croquettes."
+            },
+            // NUOVO: Porzione di patatine fritte
+            {
+                id: 23,
+                nameIt: "Porzione di patatine fritte",
+                nameEn: "French fries portion",
+                price: 5.00,
+                category: "secondi",
+                descIt: "Patatine fritte croccanti e dorate, servite con sale.",
+                descEn: "Crispy golden French fries, served with salt."
             },
 
             // VINI
@@ -800,7 +845,6 @@
         document.addEventListener("DOMContentLoaded", () => {
             renderProducts(products);
             populateArrivalTimes();
-            // default radio "VOGLIO UN TAVOLO" è già checked
         });
 
         // ============================
@@ -845,7 +889,7 @@
         }
 
         // ============================
-        // 6. ORARIO DI ARRIVO (populate)
+        // 6. ORARIO DI ARRIVO
         // ============================
         function populateArrivalTimes() {
             const sel = document.getElementById('arrival-time');
@@ -861,7 +905,7 @@
                     sel.appendChild(opt);
                 }
             }
-            // seleziona le 20:00 come default (se esiste)
+            // default 20:00
             const defaultOption = sel.querySelector('option[value="20:00"]');
             if (defaultOption) defaultOption.selected = true;
         }
@@ -940,14 +984,12 @@
                 return;
             }
 
-            // Raccogli dati extra
             const arrivalTime = document.getElementById('arrival-time').value;
             const modeRadios = document.querySelectorAll('input[name="order-mode"]');
             let mode = "VOGLIO UN TAVOLO";
             modeRadios.forEach(r => { if (r.checked) mode = r.value; });
             const notes = document.getElementById('order-notes').value.trim();
 
-            // Costruisci messaggio
             let msg = "*NUOVO ORDINE DA MARIO GASTRONOMIA*\n\n";
             let total = 0;
 
@@ -964,8 +1006,6 @@
             msg += `\n*Modalità:* ${mode}`;
             if (notes) msg += `\n*Note:* ${notes}`;
             msg += `\n\n*TOTALE:* €${total.toFixed(2)}`;
-
-            // Avviso di conferma (già visibile nel carrello, ma lo ribadiamo nel messaggio)
             msg += `\n\n_⚠️ Attendere risposta di conferma da parte dello staff._`;
 
             const encoded = encodeURIComponent(msg);
