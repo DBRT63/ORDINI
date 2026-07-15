@@ -1,1017 +1,439 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Da Mario - Friggitoria & Gastronomia Artigianale</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <style>
-        :root {
-            --primary: #e67e22;
-            --dark: #2c3e50;
-            --light: #f8f9fa;
-            --text: #333;
-            --warning-bg: #fff3cd;
-            --warning-border: #ffc107;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root { --primary: #e67e22; --dark: #2c3e50; --light: #f8f9fa; --text: #333; }
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+  html, body { width: 100%; }
+  body { background: transparent; color: var(--text); overflow-x: hidden; }
+  @media (max-width: 768px) { body { min-height: 5500px; } }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+  .top-bar {
+    position: sticky; top: 10px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 0 20px 0; z-index: 999;
+  }
+  .home-btn {
+    background: var(--dark); color: white; border: none;
+    padding: 10px 18px; border-radius: 25px; font-weight: 600; font-size: 14px;
+    cursor: pointer; text-decoration: none; display: flex; align-items: center;
+    gap: 7px; transition: background 0.3s;
+  }
+  .home-btn:hover { background: var(--primary); }
+  .cart-trigger {
+    background: var(--dark); color: white; border: none;
+    padding: 10px 20px; border-radius: 25px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; gap: 8px;
+    font-size: 15px; transition: background 0.3s;
+  }
+  .cart-trigger:hover { background: var(--primary); }
+  .cart-badge {
+    background: red; color: white; border-radius: 50%;
+    padding: 2px 8px; font-size: 12px;
+  }
 
-        body {
-            background-color: var(--light);
-            color: var(--text);
-        }
+  .categories-bar {
+    display: flex; justify-content: center; gap: 10px;
+    margin-bottom: 30px; flex-wrap: wrap;
+  }
+  .category-btn {
+    background: #fff; border: 2px solid var(--primary); color: var(--primary);
+    padding: 8px 18px; border-radius: 25px; cursor: pointer;
+    font-weight: 600; font-size: 13px; transition: all 0.3s;
+  }
+  .category-btn.active, .category-btn:hover { background: var(--primary); color: #fff; }
 
-        /* HEADER */
-        header {
-            background-color: #fff;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
+  .products-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px; margin-bottom: 40px;
+  }
+  .product-card {
+    background: white; border-radius: 12px; overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    display: flex; flex-direction: column; justify-content: space-between;
+    transition: transform 0.2s;
+  }
+  .product-card:hover { transform: translateY(-4px); }
+  .product-info { padding: 18px 18px 10px 18px; }
+  .product-title { font-size: 15px; font-weight: 600; color: var(--dark); margin-bottom: 5px; }
+  .product-desc-it { font-size: 12px; color: #555; line-height: 1.4; margin-bottom: 3px; }
+  .product-desc-en { font-size: 11px; color: #999; font-style: italic; line-height: 1.4; margin-bottom: 10px; }
+  .product-footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 18px 16px 18px;
+  }
+  .product-price { font-size: 17px; font-weight: 700; color: var(--primary); }
+  .add-btn {
+    background: var(--primary); color: white; border: none;
+    padding: 8px 16px; border-radius: 6px; cursor: pointer;
+    font-weight: 600; font-size: 13px; transition: background 0.2s;
+  }
+  .add-btn:hover { background: #d35400; }
 
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+  .cart-sidebar {
+    position: fixed; top: 0; right: -420px;
+    width: 100%; max-width: 400px; height: 100%;
+    background: white; box-shadow: -5px 0 20px rgba(0,0,0,0.12);
+    z-index: 9999; transition: right 0.3s ease;
+    display: flex; flex-direction: column; padding: 25px;
+  }
+  .cart-sidebar.open { right: 0; }
+  .cart-header {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 2px solid #f1f1f1; padding-bottom: 15px; margin-bottom: 15px;
+  }
+  .cart-header h3 { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--dark); }
+  .close-cart { font-size: 30px; cursor: pointer; color: var(--dark); line-height: 1; }
+  .cart-items { flex-grow: 1; overflow-y: auto; }
+  .cart-item {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0;
+  }
+  .cart-item-details h4 { font-size: 13px; color: var(--dark); margin-bottom: 3px; }
+  .cart-item-details small { color: #999; font-size: 12px; }
+  .cart-item-controls { display: flex; align-items: center; gap: 10px; }
+  .cart-item-controls button {
+    background: var(--light); border: none; width: 28px; height: 28px;
+    border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 16px; color: var(--dark);
+  }
+  .cart-empty { text-align: center; color: #aaa; font-size: 14px; margin-top: 40px; }
 
-        .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 26px;
-            font-weight: 800;
-            color: var(--primary);
-            text-decoration: none;
-        }
+  .cart-footer { border-top: 2px solid #f1f1f1; padding-top: 15px; }
+  .order-field { margin-bottom: 11px; }
+  .order-field label {
+    display: block; font-size: 11px; font-weight: 600; color: var(--dark);
+    margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .order-field select, .order-field textarea {
+    width: 100%; padding: 8px 11px; border: 1px solid #ddd; border-radius: 6px;
+    font-family: inherit; font-size: 13px; color: var(--text); background: #fafafa;
+  }
+  .order-field select:focus, .order-field textarea:focus { outline: none; border-color: var(--primary); }
+  .order-field textarea { resize: none; }
 
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
+  .choice-group { display: flex; gap: 10px; }
+  .choice-btn {
+    flex: 1; padding: 9px; border: 2px solid #ddd; border-radius: 8px;
+    background: #fafafa; cursor: pointer; font-size: 12px; font-weight: 600;
+    color: #777; text-align: center; transition: all 0.2s;
+  }
+  .choice-btn.selected { border-color: var(--primary); background: #fff5ec; color: var(--primary); }
 
-        .home-btn {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .home-btn:hover {
-            background: var(--primary);
-            color: #fff;
-        }
+  .confirm-warning {
+    background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px;
+    padding: 9px 12px; margin-bottom: 11px; font-size: 11px;
+    color: #856404; font-weight: 600; text-align: center; line-height: 1.5;
+  }
+  .cart-total {
+    display: flex; justify-content: space-between;
+    font-size: 18px; font-weight: bold; margin-bottom: 13px; color: var(--dark);
+  }
+  .whatsapp-btn {
+    display: block; width: 100%; background: #25D366; color: white;
+    text-align: center; padding: 13px; border-radius: 8px; font-weight: bold;
+    font-size: 15px; box-shadow: 0 4px 10px rgba(37,211,102,0.3);
+    transition: background 0.2s; cursor: pointer; border: none;
+  }
+  .whatsapp-btn:hover { background: #128C7E; }
 
-        .cart-trigger {
-            background: var(--dark);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background 0.3s;
-        }
-        .cart-trigger:hover {
-            background: var(--primary);
-        }
+  .overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.45); z-index: 9998; display: none;
+  }
+  .overlay.open { display: block; }
 
-        .cart-badge {
-            background: red;
-            color: white;
-            border-radius: 50%;
-            padding: 2px 8px;
-            font-size: 12px;
-        }
-
-        /* HERO */
-        .hero {
-            max-width: 1200px;
-            margin: 20px auto 40px auto;
-            text-align: center;
-            padding: 60px 20px;
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-                url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80') center/cover;
-            color: white;
-            border-radius: 15px;
-        }
-
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 42px;
-            margin-bottom: 10px;
-        }
-        .hero p {
-            font-size: 16px;
-            max-width: 700px;
-            margin: 0 auto 20px auto;
-            opacity: 0.95;
-            line-height: 1.6;
-        }
-        .features {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-            font-size: 14px;
-        }
-        .features span {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 5px 15px;
-            border-radius: 15px;
-            backdrop-filter: blur(5px);
-        }
-
-        /* MAIN */
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px 40px 20px;
-        }
-
-        .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 32px;
-            color: var(--dark);
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        /* CATEGORIE FILTRO */
-        .categories-bar {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 35px;
-            flex-wrap: wrap;
-        }
-
-        .category-btn {
-            background: #fff;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            padding: 8px 22px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        .category-btn.active,
-        .category-btn:hover {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        /* GRIGLIA PRODOTTI */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.2s;
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .product-info {
-            padding: 22px;
-        }
-
-        .product-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--dark);
-            margin-bottom: 4px;
-        }
-        .product-title-en {
-            font-size: 14px;
-            font-weight: 300;
-            color: #777;
-            margin-bottom: 10px;
-            font-style: italic;
-        }
-
-        .product-desc {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 14px;
-            line-height: 1.5;
-        }
-        .product-desc-en {
-            font-size: 12px;
-            color: #888;
-            margin-bottom: 18px;
-            line-height: 1.4;
-            font-style: italic;
-        }
-
-        .product-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .product-price {
-            font-size: 19px;
-            font-weight: 600;
-            color: var(--primary);
-        }
-        .add-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-        .add-btn:hover {
-            background: #d35400;
-        }
-
-        /* SIDEBAR CARRETTO */
-        .cart-sidebar {
-            position: fixed;
-            top: 0;
-            right: -440px;
-            width: 100%;
-            max-width: 440px;
-            height: 100%;
-            background: white;
-            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.12);
-            z-index: 2000;
-            transition: right 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            padding: 25px;
-        }
-        .cart-sidebar.open {
-            right: 0;
-        }
-
-        .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #f1f1f1;
-            padding-bottom: 15px;
-            margin-bottom: 18px;
-        }
-        .close-cart {
-            font-size: 28px;
-            cursor: pointer;
-            color: var(--dark);
-        }
-
-        .cart-items {
-            flex-grow: 1;
-            overflow-y: auto;
-            margin-bottom: 15px;
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #f8f9fa;
-        }
-        .cart-item-details h4 {
-            font-size: 14px;
-            color: var(--dark);
-            margin-bottom: 2px;
-        }
-        .cart-item-details small {
-            color: #777;
-        }
-        .cart-item-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .cart-item-controls button {
-            background: var(--light);
-            border: none;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-        }
-
-        /* FORM ORDINE NEL CARRETTO */
-        .order-form {
-            border-top: 2px solid #f1f1f1;
-            padding-top: 18px;
-            margin-top: 4px;
-        }
-
-        .form-group {
-            margin-bottom: 14px;
-        }
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 4px;
-            color: var(--dark);
-        }
-        .form-group select,
-        .form-group input[type="text"],
-        .form-group textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
-            background: #fafafa;
-            transition: border 0.2s;
-        }
-        .form-group select:focus,
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: var(--primary);
-            outline: none;
-            background: #fff;
-        }
-
-        .radio-group {
-            display: flex;
-            gap: 24px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .radio-group label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-weight: 400;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .radio-group input[type="radio"] {
-            accent-color: var(--primary);
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        .cart-total {
-            display: flex;
-            justify-content: space-between;
-            font-size: 19px;
-            font-weight: bold;
-            margin: 10px 0 6px 0;
-            color: var(--dark);
-        }
-
-        .warning-box {
-            background: var(--warning-bg);
-            border-left: 5px solid var(--warning-border);
-            padding: 12px 14px;
-            border-radius: 6px;
-            margin: 12px 0 16px 0;
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #856404;
-        }
-        .warning-box i {
-            font-size: 20px;
-            margin-top: 2px;
-        }
-
-        .whatsapp-btn {
-            display: block;
-            width: 100%;
-            background: #25D366;
-            color: white;
-            text-align: center;
-            padding: 14px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 16px;
-            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
-            transition: background 0.2s;
-            border: none;
-            cursor: pointer;
-        }
-        .whatsapp-btn:hover {
-            background: #128C7E;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1500;
-            display: none;
-        }
-        .overlay.open {
-            display: block;
-        }
-
-        /* FOOTER */
-        .footer {
-            max-width: 1200px;
-            margin: 0 auto 30px auto;
-            padding: 20px;
-            text-align: center;
-            border-top: 2px solid #e9ecef;
-        }
-        .footer .home-btn-large {
-            display: inline-block;
-            background: var(--primary);
-            color: #fff;
-            padding: 12px 30px;
-            border-radius: 30px;
-            font-weight: 600;
-            text-decoration: none;
-            font-size: 16px;
-            transition: background 0.3s;
-            box-shadow: 0 4px 10px rgba(230, 126, 34, 0.3);
-        }
-        .footer .home-btn-large:hover {
-            background: #d35400;
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 32px;
-            }
-            .hero p {
-                font-size: 14px;
-            }
-            .features {
-                gap: 10px;
-            }
-            .nav-container {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .nav-right {
-                justify-content: space-between;
-            }
-            .cart-sidebar {
-                max-width: 100%;
-                right: -100%;
-                padding: 18px;
-            }
-        }
-    </style>
+  @media (max-width: 600px) {
+    .products-grid { grid-template-columns: 1fr; }
+    .cart-sidebar { max-width: 100%; }
+  }
+</style>
 </head>
 <body>
 
-    <!-- HEADER -->
-    <header>
-        <div class="nav-container">
-            <a href="#" class="logo">Da Mario</a>
-            <div class="nav-right">
-                <a href="https://www.damario.art" target="_blank" class="home-btn">
-                    <i class="fas fa-home"></i> Torna alla Home
-                </a>
-                <button class="cart-trigger" onclick="toggleCart()">
-                    <i class="fas fa-shopping-basket"></i> Carrello
-                    <span class="cart-badge" id="cart-badge">0</span>
-                </button>
-            </div>
-        </div>
-    </header>
+<div class="top-bar">
+  <a href="https://www.damario.art" target="_blank" class="home-btn">
+    <i class="fas fa-home"></i> Torna alla Home
+  </a>
+  <button class="cart-trigger" onclick="toggleCart()">
+    <i class="fas fa-shopping-basket"></i> Carrello
+    <span class="cart-badge" id="cart-badge">0</span>
+  </button>
+</div>
 
-    <!-- HERO -->
-    <section class="hero">
-        <h1>Gastronomia & Friggitoria Da Mario</h1>
-        <p>L'autentica tradizione culinaria e l'arte del fritto dorato. Prepariamo ogni piatto con ingredienti freschi selezionati e una passione artigianale che si sente in ogni morso.</p>
-        <div class="features">
-            <span><i class="fas fa-fire"></i> Frittura Espressa</span>
-            <span><i class="fas fa-leaf"></i> Ingredienti Selezionati</span>
-            <span><i class="fas fa-bolt"></i> Ordina via WhatsApp</span>
-        </div>
-    </section>
+<div class="categories-bar">
+  <button class="category-btn active" onclick="filterCategory('all', this)">Tutto il Menù</button>
+  <button class="category-btn" onclick="filterCategory('gastronomia', this)">Gastronomia</button>
+  <button class="category-btn" onclick="filterCategory('primi', this)">Primi Piatti</button>
+  <button class="category-btn" onclick="filterCategory('secondi', this)">Secondi Piatti</button>
+  <button class="category-btn" onclick="filterCategory('vini', this)">Vini</button>
+  <button class="category-btn" onclick="filterCategory('bevande', this)">Bibite & Birre</button>
+</div>
 
-    <!-- MAIN -->
-    <main class="main-container">
-        <h2 class="section-title">Scegli e Ordina</h2>
+<div class="products-grid" id="products-container"></div>
 
-        <div class="categories-bar">
-            <button class="category-btn active" onclick="filterCategory('all', this)">Tutto il Menù</button>
-            <button class="category-btn" onclick="filterCategory('gastronomia', this)">Gastronomia</button>
-            <button class="category-btn" onclick="filterCategory('primi', this)">Primi Piatti</button>
-            <button class="category-btn" onclick="filterCategory('secondi', this)">Secondi Piatti</button>
-            <button class="category-btn" onclick="filterCategory('vini', this)">Vini</button>
-            <button class="category-btn" onclick="filterCategory('bevande', this)">Bibite & Birre</button>
-        </div>
+<div class="overlay" id="overlay" onclick="toggleCart()"></div>
 
-        <div class="products-grid" id="products-container"></div>
-    </main>
-
-    <!-- FOOTER con pulsante Home -->
-    <footer class="footer">
-        <a href="https://www.damario.art" target="_blank" class="home-btn-large">
-            <i class="fas fa-home"></i> Torna alla Home
-        </a>
-    </footer>
-
-    <!-- OVERLAY -->
-    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
-
-    <!-- SIDEBAR CARRETTO -->
-    <div class="cart-sidebar" id="cart-sidebar">
-        <div class="cart-header">
-            <h3>Il Tuo Ordine</h3>
-            <span class="close-cart" onclick="toggleCart()">&times;</span>
-        </div>
-
-        <div class="cart-items" id="cart-items-container"></div>
-
-        <div class="order-form">
-            <!-- ORARIO DI ARRIVO -->
-            <div class="form-group">
-                <label for="arrival-time"><i class="far fa-clock"></i> ORARIO DI ARRIVO</label>
-                <select id="arrival-time">
-                    <!-- popolato via JS -->
-                </select>
-            </div>
-
-            <!-- TAVOLO / PORTO VIA -->
-            <div class="form-group">
-                <label><i class="fas fa-utensils"></i> Modalità</label>
-                <div class="radio-group">
-                    <label><input type="radio" name="order-mode" value="VOGLIO UN TAVOLO" checked /> VOGLIO UN TAVOLO</label>
-                    <label><input type="radio" name="order-mode" value="PORTO VIA" /> PORTO VIA</label>
-                </div>
-            </div>
-
-            <!-- NOTE -->
-            <div class="form-group">
-                <label for="order-notes"><i class="far fa-sticky-note"></i> NOTE</label>
-                <textarea id="order-notes" rows="2" placeholder="Allergie, richieste speciali, ecc."></textarea>
-            </div>
-
-            <!-- TOTALE -->
-            <div class="cart-total">
-                <span>Totale:</span>
-                <span id="cart-total-price">€0.00</span>
-            </div>
-
-            <!-- AVVISO -->
-            <div class="warning-box">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span><strong>ATTENZIONE!</strong> Attendere risposta di conferma da parte dello staff.</span>
-            </div>
-
-            <!-- PULSANTE WHATSAPP -->
-            <button class="whatsapp-btn" onclick="sendWhatsAppOrder(event)">
-                <i class="fab fa-whatsapp"></i> Invia Ordine su WhatsApp
-            </button>
-        </div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-header">
+    <h3>Il Tuo Ordine</h3>
+    <span class="close-cart" onclick="toggleCart()">&times;</span>
+  </div>
+  <div class="cart-items" id="cart-items-container">
+    <p class="cart-empty">Il carrello è vuoto.<br>Aggiungi qualcosa dal menù!</p>
+  </div>
+  <div class="cart-footer">
+    <div class="order-field">
+      <label><i class="fas fa-clock"></i> Orario di Arrivo</label>
+      <select id="order-time">
+        <option value="">-- Seleziona orario --</option>
+      </select>
     </div>
+    <div class="order-field">
+      <label><i class="fas fa-utensils"></i> Preferenza</label>
+      <div class="choice-group">
+        <button class="choice-btn" id="btn-tavolo" onclick="selectChoice('tavolo')">🪑 Voglio un Tavolo</button>
+        <button class="choice-btn" id="btn-asporto" onclick="selectChoice('asporto')">🛍️ Porto Via</button>
+      </div>
+    </div>
+    <div class="order-field">
+      <label><i class="fas fa-pen"></i> Note</label>
+      <textarea id="order-notes" rows="2" placeholder="Allergie, richieste speciali..."></textarea>
+    </div>
+    <div class="confirm-warning">
+      <i class="fas fa-exclamation-triangle"></i>
+      ATTENZIONE! Attendere risposta di conferma da parte dello staff.
+    </div>
+    <div class="cart-total">
+      <span>Totale:</span>
+      <span id="cart-total-price">€0.00</span>
+    </div>
+    <button class="whatsapp-btn" onclick="sendWhatsAppOrder()">
+      <i class="fab fa-whatsapp"></i> Invia Ordine su WhatsApp
+    </button>
+  </div>
+</div>
 
-    <script>
-        // ============================
-        // 1. DATI DEL MENÙ (Italiano / Inglese) - AGGIUNTA PATATINE FRITTE
-        // ============================
-        const products = [
-            // GASTRONOMIA
-            {
-                id: 1,
-                nameIt: "Mare caldo",
-                nameEn: "Warm Sea",
-                price: 15.00,
-                category: "gastronomia",
-                descIt: "Cozze, vongole, gamberi e pesce in un ricco brodo di mare.",
-                descEn: "Mussels, clams, shrimp and fish in a rich seafood broth."
-            },
-            {
-                id: 2,
-                nameIt: "Polpo e patate",
-                nameEn: "Octopus and Potatoes",
-                price: 14.00,
-                category: "gastronomia",
-                descIt: "Polpo tenero con patate, prezzemolo e olio d'oliva.",
-                descEn: "Tender octopus with potatoes, parsley and olive oil."
-            },
-            {
-                id: 3,
-                nameIt: "Impepata di cozze",
-                nameEn: "Peppered Mussels",
-                price: 12.00,
-                category: "gastronomia",
-                descIt: "Cozze fresche saltate con pepe, aglio e vino bianco.",
-                descEn: "Fresh mussels sautéed with pepper, garlic and white wine."
-            },
-            {
-                id: 4,
-                nameIt: "Cozze ripiene",
-                nameEn: "Stuffed Mussels",
-                price: 13.00,
-                category: "gastronomia",
-                descIt: "Cozze ripiene di pane, aglio, prezzemolo e formaggio.",
-                descEn: "Mussels stuffed with bread, garlic, parsley and cheese."
-            },
+<script>
+  const WHATSAPP_NUMBER = "393381412337";
+  let selectedChoice = "";
 
-            // PRIMI PIATTI
-            {
-                id: 5,
-                nameIt: "Paccheri con pomodorini, gambero, stracciatella e granella di pistacchio",
-                nameEn: "Paccheri with cherry tomatoes, shrimp, stracciatella and pistachio crumble",
-                price: 16.00,
-                category: "primi",
-                descIt: "Paccheri con pomodorini, gamberi, stracciatella cremosa e pistacchio croccante.",
-                descEn: "Paccheri pasta with cherry tomatoes, shrimp, creamy stracciatella and crunchy pistachio."
-            },
-            {
-                id: 6,
-                nameIt: "Spaghetti allo scoglio",
-                nameEn: "Seafood Spaghetti",
-                price: 16.00,
-                category: "primi",
-                descIt: "Spaghetti con cozze, vongole, gamberi e calamari.",
-                descEn: "Spaghetti with mussels, clams, shrimp and calamari."
-            },
+  const products = [
+    // GASTRONOMIA
+    { id: 1,  name: "Mare caldo",                     price: 15.00, category: "gastronomia",
+      descIt: "Zuppa calda di mare con frutti di mare freschi di giornata.",
+      descEn: "Hot seafood soup with fresh daily catch." },
+    { id: 2,  name: "Polpo e patate",                 price: 14.00, category: "gastronomia",
+      descIt: "Polpo tenero con patate novelle in insalata tiepida.",
+      descEn: "Tender octopus with baby potatoes in a warm salad." },
+    { id: 3,  name: "Impepata di cozze",              price: 12.00, category: "gastronomia",
+      descIt: "Cozze fresche cotte con pepe nero, prezzemolo e limone.",
+      descEn: "Fresh mussels cooked with black pepper, parsley and lemon." },
+    { id: 4,  name: "Cozze ripiene",                  price: 13.00, category: "gastronomia",
+      descIt: "Cozze farcite con pan grattato, aglio, prezzemolo e pomodoro.",
+      descEn: "Stuffed mussels with breadcrumbs, garlic, parsley and tomato." },
 
-            // SECONDI PIATTI (aggiunta patatine fritte)
-            {
-                id: 7,
-                nameIt: "Gran fritto",
-                nameEn: "Grand Fried Platter",
-                price: 16.00,
-                category: "secondi",
-                descIt: "Calamari, gamberi, acciughe, verdure, patate fritte.",
-                descEn: "Calamari, shrimp, anchovies, vegetables, fried potatoes."
-            },
-            {
-                id: 8,
-                nameIt: "Fritto misto",
-                nameEn: "Mixed Fried Seafood",
-                price: 14.00,
-                category: "secondi",
-                descIt: "Calamari, gamberi, acciughe.",
-                descEn: "Calamari, shrimp, anchovies."
-            },
-            {
-                id: 9,
-                nameIt: "Frittura mista di paranza",
-                nameEn: "Mixed Paranza Fried Fish",
-                price: 13.00,
-                category: "secondi",
-                descIt: "Pesce azzurro misto fritto.",
-                descEn: "Mixed small fried fish."
-            },
-            {
-                id: 10,
-                nameIt: "Frittura di gamberi",
-                nameEn: "Fried Shrimp",
-                price: 7.00,
-                category: "secondi",
-                descIt: "Gamberi fritti croccanti.",
-                descEn: "Crispy fried shrimp."
-            },
-            {
-                id: 11,
-                nameIt: "Frittura di acciughe",
-                nameEn: "Fried Anchovies",
-                price: 6.00,
-                category: "secondi",
-                descIt: "Acciughe fritte croccanti.",
-                descEn: "Crispy fried anchovies."
-            },
-            {
-                id: 12,
-                nameIt: "Anelli di cipolla (6 pezzi)",
-                nameEn: "Onion Rings (6 pieces)",
-                price: 6.00,
-                category: "secondi",
-                descIt: "Anelli di cipolla dorati e croccanti.",
-                descEn: "Golden crispy onion rings."
-            },
-            {
-                id: 13,
-                nameIt: "Mozzarelline (6 pezzi)",
-                nameEn: "Mozzarella Sticks (6 pieces)",
-                price: 6.00,
-                category: "secondi",
-                descIt: "Bastoncini di mozzarella impanati e fritti.",
-                descEn: "Breaded and fried mozzarella sticks."
-            },
-            {
-                id: 14,
-                nameIt: "Crocchette di patate (6 pezzi)",
-                nameEn: "Potato Croquettes (6 pieces)",
-                price: 6.00,
-                category: "secondi",
-                descIt: "Crocchette di patate croccanti fuori e morbide dentro.",
-                descEn: "Crispy on the outside, soft on the inside potato croquettes."
-            },
-            // NUOVO: Porzione di patatine fritte
-            {
-                id: 23,
-                nameIt: "Porzione di patatine fritte",
-                nameEn: "French fries portion",
-                price: 5.00,
-                category: "secondi",
-                descIt: "Patatine fritte croccanti e dorate, servite con sale.",
-                descEn: "Crispy golden French fries, served with salt."
-            },
+    // PRIMI PIATTI
+    { id: 5,  name: "Paccheri gambero e pistacchio",  price: 16.00, category: "primi",
+      descIt: "Paccheri con pomodorini, gambero, stracciatella e granella di pistacchio.",
+      descEn: "Paccheri pasta with cherry tomatoes, shrimp, stracciatella and pistachio crumble." },
+    { id: 6,  name: "Spaghetti allo scoglio",         price: 16.00, category: "primi",
+      descIt: "Spaghetti con frutti di mare misti nel loro sugo naturale.",
+      descEn: "Spaghetti with mixed seafood in their natural sauce." },
 
-            // VINI
-            {
-                id: 15,
-                nameIt: "Vermentino L'Aurora di Francesco",
-                nameEn: "Vermentino L'Aurora di Francesco",
-                price: 15.00,
-                category: "vini",
-                descIt: "Vermentino fresco e aromatico.",
-                descEn: "Fresh and aromatic Vermentino."
-            },
-            {
-                id: 16,
-                nameIt: "Vermentino L'Aurora di Francesco frizzante",
-                nameEn: "Vermentino L'Aurora di Francesco sparkling",
-                price: 15.00,
-                category: "vini",
-                descIt: "Vermentino frizzante e leggero.",
-                descEn: "Light and sparkling Vermentino."
-            },
-            {
-                id: 17,
-                nameIt: "Vermentino Riflesso",
-                nameEn: "Vermentino Riflesso",
-                price: 22.00,
-                category: "vini",
-                descIt: "Vermentino strutturato e complesso.",
-                descEn: "Structured and complex Vermentino."
-            },
-            {
-                id: 18,
-                nameIt: "Prosecco Col de' Salici Extra Dry",
-                nameEn: "Prosecco Col de' Salici Extra Dry",
-                price: 18.00,
-                category: "vini",
-                descIt: "Prosecco extra dry frizzante.",
-                descEn: "Sparkling extra dry Prosecco."
-            },
-            {
-                id: 19,
-                nameIt: "Prosecco Col de' Salici Brut",
-                nameEn: "Prosecco Col de' Salici Brut",
-                price: 18.00,
-                category: "vini",
-                descIt: "Prosecco brut secco.",
-                descEn: "Dry Brut Prosecco."
-            },
+    // SECONDI PIATTI
+    { id: 7,  name: "Gran fritto",                    price: 16.00, category: "secondi",
+      descIt: "Calamari, gamberi, acciughe, verdure e patate fritte in pastella croccante.",
+      descEn: "Calamari, shrimp, anchovies, vegetables and potatoes in crispy batter." },
+    { id: 8,  name: "Fritto misto",                   price: 14.00, category: "secondi",
+      descIt: "Calamari, gamberi e acciughe fritti al momento.",
+      descEn: "Freshly fried calamari, shrimp and anchovies." },
+    { id: 9,  name: "Frittura mista di paranza",      price: 13.00, category: "secondi",
+      descIt: "Mix di pescato del giorno fritto in olio di semi selezionato.",
+      descEn: "Mixed daily catch fried in quality seed oil." },
+    { id: 10, name: "Frittura di gamberi",            price: 7.00,  category: "secondi",
+      descIt: "Gamberi freschi infarinati e fritti, serviti con limone.",
+      descEn: "Fresh floured shrimp, fried and served with lemon." },
+    { id: 11, name: "Frittura di acciughe",           price: 6.00,  category: "secondi",
+      descIt: "Acciughe fresche fritte, croccanti e leggere.",
+      descEn: "Fresh fried anchovies, crispy and light." },
+    { id: 12, name: "Anelli di cipolla (6 pezzi)",    price: 6.00,  category: "secondi",
+      descIt: "Anelli di cipolla dorata in pastella leggera e croccante.",
+      descEn: "Golden onion rings in light crispy batter." },
+    { id: 13, name: "Mozzarelline (6 pezzi)",         price: 6.00,  category: "secondi",
+      descIt: "Bocconcini di mozzarella con doppia panatura croccante.",
+      descEn: "Mozzarella bites with double crispy coating." },
+    { id: 14, name: "Crocchette di patate (6 pezzi)", price: 6.00,  category: "secondi",
+      descIt: "Crocchette artigianali di patate con cuore filante.",
+      descEn: "Homemade potato croquettes with melting center." },
+    { id: 15, name: "Patatine fritte (porzione)",     price: 5.00,  category: "secondi",
+      descIt: "Patate fresche tagliate a mano e fritte al momento.",
+      descEn: "Fresh hand-cut potatoes, fried to order." },
 
-            // BIBITE E BIRRE
-            {
-                id: 20,
-                nameIt: "Acqua naturale / frizzante 75 cl",
-                nameEn: "Still / Sparkling Water 75 cl",
-                price: 2.50,
-                category: "bevande",
-                descIt: "Acqua minerale naturale o frizzante.",
-                descEn: "Still or sparkling mineral water."
-            },
-            {
-                id: 21,
-                nameIt: "Bibite in lattina",
-                nameEn: "Canned Soft Drinks",
-                price: 2.50,
-                category: "bevande",
-                descIt: "Coca-Cola, Fanta, Sprite.",
-                descEn: "Coca-Cola, Fanta, Sprite."
-            },
-            {
-                id: 22,
-                nameIt: "Birra in bottiglia",
-                nameEn: "Bottled Beer",
-                price: 4.00,
-                category: "bevande",
-                descIt: "Birra chiara artigianale.",
-                descEn: "Craft lager beer."
-            }
-        ];
+    // VINI
+    { id: 16, name: "Vermentino L'Aurora (fermo)",    price: 15.00, category: "vini",
+      descIt: "Vermentino fermo di Francesco, profumato e fresco. Bottiglia.",
+      descEn: "Still Vermentino by Francesco, fragrant and fresh. Bottle." },
+    { id: 17, name: "Vermentino L'Aurora (frizzante)", price: 15.00, category: "vini",
+      descIt: "Vermentino frizzante di Francesco, leggero e dissetante. Bottiglia.",
+      descEn: "Sparkling Vermentino by Francesco, light and refreshing. Bottle." },
+    { id: 18, name: "Vermentino Riflesso",            price: 22.00, category: "vini",
+      descIt: "Vermentino di pregio, strutturato e persistente. Bottiglia.",
+      descEn: "Premium Vermentino, full-bodied and persistent. Bottle." },
+    { id: 19, name: "Prosecco Col de' Salici Extra Dry", price: 18.00, category: "vini",
+      descIt: "Prosecco DOC Extra Dry, fine e delicato. Bottiglia.",
+      descEn: "DOC Extra Dry Prosecco, fine and delicate. Bottle." },
+    { id: 20, name: "Prosecco Col de' Salici Brut",   price: 18.00, category: "vini",
+      descIt: "Prosecco DOC Brut, secco e fresco. Bottiglia.",
+      descEn: "DOC Brut Prosecco, dry and crisp. Bottle." },
 
-        // ============================
-        // 2. STATO CARRETTO
-        // ============================
-        let cart = {};
+    // BIBITE E BIRRE
+    { id: 21, name: "Acqua naturale / frizzante 75cl", price: 2.50, category: "bevande",
+      descIt: "Acqua minerale in bottiglia da 75cl.",
+      descEn: "Mineral water, 75cl bottle." },
+    { id: 22, name: "Bibite in lattina",              price: 2.50, category: "bevande",
+      descIt: "Lattina da 33cl (Coca-Cola, Fanta, ecc.).",
+      descEn: "33cl can (Coca-Cola, Fanta, etc.)." },
+    { id: 23, name: "Birra in bottiglia",             price: 4.00, category: "bevande",
+      descIt: "Birra in bottiglia, fresca di frigo.",
+      descEn: "Bottled beer, chilled." },
+  ];
 
-        // ============================
-        // 3. INIZIALIZZAZIONE
-        // ============================
-        document.addEventListener("DOMContentLoaded", () => {
-            renderProducts(products);
-            populateArrivalTimes();
-        });
+  let cart = {};
 
-        // ============================
-        // 4. RENDER PRODOTTI
-        // ============================
-        function renderProducts(productsList) {
-            const container = document.getElementById('products-container');
-            container.innerHTML = '';
+  // Popola orari
+  const sel = document.getElementById('order-time');
+  for (let h = 9; h <= 24; h++) {
+    ['00','30'].forEach(m => {
+      if (h === 24 && m === '30') return;
+      const val = `${String(h).padStart(2,'0')}:${m}`;
+      const opt = document.createElement('option');
+      opt.value = val; opt.textContent = val;
+      sel.appendChild(opt);
+    });
+  }
 
-            productsList.forEach(p => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.innerHTML = `
-                    <div class="product-info">
-                        <div class="product-title">${p.nameIt}</div>
-                        <div class="product-title-en">${p.nameEn}</div>
-                        <div class="product-desc">${p.descIt}</div>
-                        <div class="product-desc-en">${p.descEn}</div>
-                        <div class="product-footer">
-                            <div class="product-price">€${p.price.toFixed(2)}</div>
-                            <button class="add-btn" onclick="addToCart(${p.id})">Aggiungi</button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
+  function selectChoice(choice) {
+    selectedChoice = choice;
+    document.getElementById('btn-tavolo').classList.toggle('selected', choice === 'tavolo');
+    document.getElementById('btn-asporto').classList.toggle('selected', choice === 'asporto');
+  }
 
-        // ============================
-        // 5. FILTRO CATEGORIE
-        // ============================
-        function filterCategory(category, button) {
-            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
+  document.addEventListener("DOMContentLoaded", () => renderProducts(products));
 
-            if (category === 'all') {
-                renderProducts(products);
-            } else {
-                const filtered = products.filter(p => p.category === category);
-                renderProducts(filtered);
-            }
-        }
+  function renderProducts(list) {
+    const c = document.getElementById('products-container');
+    c.innerHTML = '';
+    list.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      card.innerHTML = `
+        <div class="product-info">
+          <div class="product-title">${p.name}</div>
+          <div class="product-desc-it">${p.descIt}</div>
+          <div class="product-desc-en">${p.descEn}</div>
+        </div>
+        <div class="product-footer">
+          <div class="product-price">€${p.price.toFixed(2)}</div>
+          <button class="add-btn" onclick="addToCart(${p.id})">+ Aggiungi</button>
+        </div>`;
+      c.appendChild(card);
+    });
+  }
 
-        // ============================
-        // 6. ORARIO DI ARRIVO
-        // ============================
-        function populateArrivalTimes() {
-            const sel = document.getElementById('arrival-time');
-            for (let h = 9; h <= 24; h++) {
-                for (let m = 0; m < 60; m += 30) {
-                    if (h === 24 && m > 0) break;
-                    const hourStr = String(h).padStart(2, '0');
-                    const minStr = String(m).padStart(2, '0');
-                    const val = `${hourStr}:${minStr}`;
-                    const opt = document.createElement('option');
-                    opt.value = val;
-                    opt.textContent = val;
-                    sel.appendChild(opt);
-                }
-            }
-            // default 20:00
-            const defaultOption = sel.querySelector('option[value="20:00"]');
-            if (defaultOption) defaultOption.selected = true;
-        }
+  function filterCategory(cat, btn) {
+    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderProducts(cat === 'all' ? products : products.filter(p => p.category === cat));
+  }
 
-        // ============================
-        // 7. GESTIONE CARRETTO
-        // ============================
-        function toggleCart() {
-            document.getElementById('cart-sidebar').classList.toggle('open');
-            document.getElementById('overlay').classList.toggle('open');
-        }
+  function toggleCart() {
+    document.getElementById('cart-sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('open');
+  }
 
-        function addToCart(productId) {
-            if (cart[productId]) {
-                cart[productId]++;
-            } else {
-                cart[productId] = 1;
-            }
-            updateCartUI();
-        }
+  function addToCart(id) {
+    cart[id] = (cart[id] || 0) + 1;
+    updateCartUI();
+  }
 
-        function changeQuantity(productId, amount) {
-            if (cart[productId]) {
-                cart[productId] += amount;
-                if (cart[productId] <= 0) {
-                    delete cart[productId];
-                }
-                updateCartUI();
-            }
-        }
+  function changeQuantity(id, delta) {
+    if (!cart[id]) return;
+    cart[id] += delta;
+    if (cart[id] <= 0) delete cart[id];
+    updateCartUI();
+  }
 
-        function updateCartUI() {
-            const container = document.getElementById('cart-items-container');
-            container.innerHTML = '';
-            let total = 0;
-            let totalItems = 0;
+  function updateCartUI() {
+    const container = document.getElementById('cart-items-container');
+    container.innerHTML = '';
+    let total = 0, totalItems = 0;
+    if (Object.keys(cart).length === 0) {
+      container.innerHTML = '<p class="cart-empty">Il carrello è vuoto.<br>Aggiungi qualcosa dal menù!</p>';
+    } else {
+      Object.keys(cart).forEach(id => {
+        const p = products.find(x => x.id == id);
+        const qty = cart[id];
+        total += p.price * qty;
+        totalItems += qty;
+        const row = document.createElement('div');
+        row.className = 'cart-item';
+        row.innerHTML = `
+          <div class="cart-item-details">
+            <h4>${p.name}</h4>
+            <small>€${p.price.toFixed(2)} × ${qty} = €${(p.price * qty).toFixed(2)}</small>
+          </div>
+          <div class="cart-item-controls">
+            <button onclick="changeQuantity(${p.id}, -1)">−</button>
+            <span>${qty}</span>
+            <button onclick="changeQuantity(${p.id}, 1)">+</button>
+          </div>`;
+        container.appendChild(row);
+      });
+    }
+    document.getElementById('cart-badge').innerText = totalItems;
+    document.getElementById('cart-total-price').innerText = `€${total.toFixed(2)}`;
+  }
 
-            Object.keys(cart).forEach(id => {
-                const product = products.find(p => p.id == id);
-                if (!product) return;
-                const quantity = cart[id];
-                const itemTotal = product.price * quantity;
-                total += itemTotal;
-                totalItems += quantity;
+  function sendWhatsAppOrder() {
+    if (Object.keys(cart).length === 0) { alert("Il carrello è vuoto!"); return; }
+    const orario = document.getElementById('order-time').value;
+    if (!orario) { alert("Seleziona l'orario di arrivo."); return; }
+    if (!selectedChoice) { alert("Indica se vuoi un tavolo o porti via."); return; }
 
-                const row = document.createElement('div');
-                row.className = 'cart-item';
-                row.innerHTML = `
-                    <div class="cart-item-details">
-                        <h4>${product.nameIt}</h4>
-                        <small>€${product.price.toFixed(2)} x ${quantity}</small>
-                    </div>
-                    <div class="cart-item-controls">
-                        <button onclick="changeQuantity(${product.id}, -1)">−</button>
-                        <span>${quantity}</span>
-                        <button onclick="changeQuantity(${product.id}, 1)">+</button>
-                    </div>
-                `;
-                container.appendChild(row);
-            });
+    let msg = "*NUOVO ORDINE — Da Mario Gastronomia*\n\n";
+    msg += `🕐 *Orario di arrivo:* ${orario}\n`;
+    msg += `${selectedChoice === 'tavolo' ? '🪑' : '🛍️'} *Preferenza:* ${selectedChoice === 'tavolo' ? 'Voglio un Tavolo' : 'Porto Via'}\n\n`;
+    msg += "*Ordine:*\n";
+    let total = 0;
+    Object.keys(cart).forEach(id => {
+      const p = products.find(x => x.id == id);
+      const qty = cart[id];
+      total += p.price * qty;
+      msg += `• *${qty}x* ${p.name} — €${(p.price * qty).toFixed(2)}\n`;
+    });
+    const notes = document.getElementById('order-notes').value.trim();
+    if (notes) msg += `\n*Note:* _${notes}_\n`;
+    msg += `\n*TOTALE: €${total.toFixed(2)}*`;
+    const encoded = msg.replace(/\n/g, '%0A').replace(/ /g, '%20');
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`, '_blank');
+  }
 
-            document.getElementById('cart-badge').innerText = totalItems;
-            document.getElementById('cart-total-price').innerText = `€${total.toFixed(2)}`;
-        }
-
-        // ============================
-        // 8. INVIO ORDINE VIA WHATSAPP
-        // ============================
-        const WHATSAPP_NUMBER = "393381412337";
-
-        function sendWhatsAppOrder(event) {
-            event.preventDefault();
-
-            if (Object.keys(cart).length === 0) {
-                alert("Il tuo carrello è vuoto! Scegli qualcosa dal menù prima di inviare l'ordine.");
-                return;
-            }
-
-            const arrivalTime = document.getElementById('arrival-time').value;
-            const modeRadios = document.querySelectorAll('input[name="order-mode"]');
-            let mode = "VOGLIO UN TAVOLO";
-            modeRadios.forEach(r => { if (r.checked) mode = r.value; });
-            const notes = document.getElementById('order-notes').value.trim();
-
-            let msg = "*NUOVO ORDINE DA MARIO GASTRONOMIA*\n\n";
-            let total = 0;
-
-            Object.keys(cart).forEach(id => {
-                const product = products.find(p => p.id == id);
-                if (!product) return;
-                const quantity = cart[id];
-                const itemTotal = product.price * quantity;
-                total += itemTotal;
-                msg += `• *${quantity}x* ${product.nameIt} (€${itemTotal.toFixed(2)})\n`;
-            });
-
-            msg += `\n*Orario arrivo:* ${arrivalTime}`;
-            msg += `\n*Modalità:* ${mode}`;
-            if (notes) msg += `\n*Note:* ${notes}`;
-            msg += `\n\n*TOTALE:* €${total.toFixed(2)}`;
-            msg += `\n\n_⚠️ Attendere risposta di conferma da parte dello staff._`;
-
-            const encoded = encodeURIComponent(msg);
-            const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`;
-            window.open(url, '_blank');
-        }
-    </script>
+  // Auto-resize per Google Sites
+  function notifyHeight() {
+    const height = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.scrollHeight);
+    window.parent.postMessage({ type: 'setHeight', height: height }, '*');
+    window.parent.postMessage(JSON.stringify({ height: height }), '*');
+  }
+  new MutationObserver(notifyHeight).observe(document.body, { childList: true, subtree: true, attributes: true });
+  window.addEventListener('load', notifyHeight);
+  window.addEventListener('resize', notifyHeight);
+  setTimeout(notifyHeight, 500);
+  setTimeout(notifyHeight, 1500);
+  setTimeout(notifyHeight, 3000);
+</script>
 </body>
 </html>
