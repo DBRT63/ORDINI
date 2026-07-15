@@ -534,7 +534,7 @@
 
             <!-- Avviso giallo con icona ⚠️ -->
             <div class="warning-box">
-                <span>⚠️</span> Attendo risposta di conferma da parte dello staff
+                <span>⚠️</span> Attendo conferma da parte dello staff
             </div>
 
             <div class="cart-total">
@@ -751,7 +751,7 @@
                 message += `\n*Note:* ${notes}`;
             }
             message += `\n\n*TOTALE ORDINE:* €${total.toFixed(2)}`;
-            message += `\n\n⚠️ Attendo risposta di conferma da parte dello staff`;
+            message += `\n\n⚠️ Attendo conferma da parte dello staff`;
 
             const encodedMessage = encodeURIComponent(message);
             const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
