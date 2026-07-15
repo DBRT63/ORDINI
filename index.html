@@ -1,439 +1,773 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-  :root { --primary: #e67e22; --dark: #2c3e50; --light: #f8f9fa; --text: #333; }
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-  html, body { width: 100%; }
-  body { background: transparent; color: var(--text); overflow-x: hidden; }
-  @media (max-width: 768px) { body { min-height: 5500px; } }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Da Mario - Friggitoria & Gastronomia Artigianale</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #e67e22;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --text: #333;
+        }
 
-  .top-bar {
-    position: sticky; top: 10px;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 0 20px 0; z-index: 999;
-  }
-  .home-btn {
-    background: var(--dark); color: white; border: none;
-    padding: 10px 18px; border-radius: 25px; font-weight: 600; font-size: 14px;
-    cursor: pointer; text-decoration: none; display: flex; align-items: center;
-    gap: 7px; transition: background 0.3s;
-  }
-  .home-btn:hover { background: var(--primary); }
-  .cart-trigger {
-    background: var(--dark); color: white; border: none;
-    padding: 10px 20px; border-radius: 25px; font-weight: 600;
-    cursor: pointer; display: flex; align-items: center; gap: 8px;
-    font-size: 15px; transition: background 0.3s;
-  }
-  .cart-trigger:hover { background: var(--primary); }
-  .cart-badge {
-    background: red; color: white; border-radius: 50%;
-    padding: 2px 8px; font-size: 12px;
-  }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
 
-  .categories-bar {
-    display: flex; justify-content: center; gap: 10px;
-    margin-bottom: 30px; flex-wrap: wrap;
-  }
-  .category-btn {
-    background: #fff; border: 2px solid var(--primary); color: var(--primary);
-    padding: 8px 18px; border-radius: 25px; cursor: pointer;
-    font-weight: 600; font-size: 13px; transition: all 0.3s;
-  }
-  .category-btn.active, .category-btn:hover { background: var(--primary); color: #fff; }
+        body {
+            background-color: var(--light);
+            color: var(--text);
+        }
 
-  .products-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 25px; margin-bottom: 40px;
-  }
-  .product-card {
-    background: white; border-radius: 12px; overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    display: flex; flex-direction: column; justify-content: space-between;
-    transition: transform 0.2s;
-  }
-  .product-card:hover { transform: translateY(-4px); }
-  .product-info { padding: 18px 18px 10px 18px; }
-  .product-title { font-size: 15px; font-weight: 600; color: var(--dark); margin-bottom: 5px; }
-  .product-desc-it { font-size: 12px; color: #555; line-height: 1.4; margin-bottom: 3px; }
-  .product-desc-en { font-size: 11px; color: #999; font-style: italic; line-height: 1.4; margin-bottom: 10px; }
-  .product-footer {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 0 18px 16px 18px;
-  }
-  .product-price { font-size: 17px; font-weight: 700; color: var(--primary); }
-  .add-btn {
-    background: var(--primary); color: white; border: none;
-    padding: 8px 16px; border-radius: 6px; cursor: pointer;
-    font-weight: 600; font-size: 13px; transition: background 0.2s;
-  }
-  .add-btn:hover { background: #d35400; }
+        /* Header fisso */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-  .cart-sidebar {
-    position: fixed; top: 0; right: -420px;
-    width: 100%; max-width: 400px; height: 100%;
-    background: white; box-shadow: -5px 0 20px rgba(0,0,0,0.12);
-    z-index: 9999; transition: right 0.3s ease;
-    display: flex; flex-direction: column; padding: 25px;
-  }
-  .cart-sidebar.open { right: 0; }
-  .cart-header {
-    display: flex; justify-content: space-between; align-items: center;
-    border-bottom: 2px solid #f1f1f1; padding-bottom: 15px; margin-bottom: 15px;
-  }
-  .cart-header h3 { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--dark); }
-  .close-cart { font-size: 30px; cursor: pointer; color: var(--dark); line-height: 1; }
-  .cart-items { flex-grow: 1; overflow-y: auto; }
-  .cart-item {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 15px; padding-bottom: 12px; border-bottom: 1px solid #f0f0f0;
-  }
-  .cart-item-details h4 { font-size: 13px; color: var(--dark); margin-bottom: 3px; }
-  .cart-item-details small { color: #999; font-size: 12px; }
-  .cart-item-controls { display: flex; align-items: center; gap: 10px; }
-  .cart-item-controls button {
-    background: var(--light); border: none; width: 28px; height: 28px;
-    border-radius: 50%; cursor: pointer; font-weight: bold; font-size: 16px; color: var(--dark);
-  }
-  .cart-empty { text-align: center; color: #aaa; font-size: 14px; margin-top: 40px; }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            flex-wrap: wrap;
+        }
 
-  .cart-footer { border-top: 2px solid #f1f1f1; padding-top: 15px; }
-  .order-field { margin-bottom: 11px; }
-  .order-field label {
-    display: block; font-size: 11px; font-weight: 600; color: var(--dark);
-    margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;
-  }
-  .order-field select, .order-field textarea {
-    width: 100%; padding: 8px 11px; border: 1px solid #ddd; border-radius: 6px;
-    font-family: inherit; font-size: 13px; color: var(--text); background: #fafafa;
-  }
-  .order-field select:focus, .order-field textarea:focus { outline: none; border-color: var(--primary); }
-  .order-field textarea { resize: none; }
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+        }
 
-  .choice-group { display: flex; gap: 10px; }
-  .choice-btn {
-    flex: 1; padding: 9px; border: 2px solid #ddd; border-radius: 8px;
-    background: #fafafa; cursor: pointer; font-size: 12px; font-weight: 600;
-    color: #777; text-align: center; transition: all 0.2s;
-  }
-  .choice-btn.selected { border-color: var(--primary); background: #fff5ec; color: var(--primary); }
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-  .confirm-warning {
-    background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px;
-    padding: 9px 12px; margin-bottom: 11px; font-size: 11px;
-    color: #856404; font-weight: 600; text-align: center; line-height: 1.5;
-  }
-  .cart-total {
-    display: flex; justify-content: space-between;
-    font-size: 18px; font-weight: bold; margin-bottom: 13px; color: var(--dark);
-  }
-  .whatsapp-btn {
-    display: block; width: 100%; background: #25D366; color: white;
-    text-align: center; padding: 13px; border-radius: 8px; font-weight: bold;
-    font-size: 15px; box-shadow: 0 4px 10px rgba(37,211,102,0.3);
-    transition: background 0.2s; cursor: pointer; border: none;
-  }
-  .whatsapp-btn:hover { background: #128C7E; }
+        .home-btn {
+            background: var(--dark);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-  .overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.45); z-index: 9998; display: none;
-  }
-  .overlay.open { display: block; }
+        .home-btn:hover {
+            background: var(--primary);
+        }
 
-  @media (max-width: 600px) {
-    .products-grid { grid-template-columns: 1fr; }
-    .cart-sidebar { max-width: 100%; }
-  }
-</style>
+        .cart-trigger {
+            background: var(--dark);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+
+        .cart-trigger:hover {
+            background: var(--primary);
+        }
+
+        .cart-badge {
+            background: red;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 12px;
+        }
+
+        /* Hero */
+        .hero {
+            max-width: 1200px;
+            margin: 20px auto 40px auto;
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)), url('https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=80') center/cover;
+            color: white;
+            border-radius: 15px;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 16px;
+            max-width: 700px;
+            margin: 0 auto 20px auto;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        .features span {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Main container */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 60px 20px;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            color: var(--dark);
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        /* Categorie Filtro */
+        .categories-bar {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            background: #fff;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 8px 22px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .category-btn.active, .category-btn:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* Griglia prodotti */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-info {
+            padding: 22px;
+        }
+
+        .product-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .product-subtitle {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .product-desc {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            height: 60px;
+            overflow: hidden;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            font-size: 19px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .add-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .add-btn:hover {
+            background: #d35400;
+        }
+
+        /* Carrello Sidebar */
+        .cart-sidebar {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 100%;
+            max-width: 420px;
+            height: 100%;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            z-index: 2000;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            overflow-y: auto;
+        }
+
+        .cart-sidebar.open {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f1f1f1;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .close-cart {
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        .cart-items {
+            flex-grow: 0;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .cart-item-details h4 {
+            font-size: 14px;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cart-item-controls button {
+            background: var(--light);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .cart-footer {
+            border-top: 2px solid #f1f1f1;
+            padding-top: 20px;
+            margin-top: auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .form-group select,
+        .form-group textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            background: white;
+        }
+
+        .service-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .service-btn {
+            flex: 1;
+            background: #f1f1f1;
+            border: 2px solid transparent;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .service-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 19px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .whatsapp-btn {
+            display: block;
+            width: 100%;
+            background: #25D366;
+            color: white;
+            text-align: center;
+            padding: 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .whatsapp-btn:hover {
+            background: #128C7E;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1500;
+            display: none;
+        }
+
+        .overlay.open {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .hero p { font-size: 14px; }
+            .features { gap: 10px; }
+            .nav-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .nav-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="top-bar">
-  <a href="https://www.damario.art" target="_blank" class="home-btn">
-    <i class="fas fa-home"></i> Torna alla Home
-  </a>
-  <button class="cart-trigger" onclick="toggleCart()">
-    <i class="fas fa-shopping-basket"></i> Carrello
-    <span class="cart-badge" id="cart-badge">0</span>
-  </button>
-</div>
-
-<div class="categories-bar">
-  <button class="category-btn active" onclick="filterCategory('all', this)">Tutto il Menù</button>
-  <button class="category-btn" onclick="filterCategory('gastronomia', this)">Gastronomia</button>
-  <button class="category-btn" onclick="filterCategory('primi', this)">Primi Piatti</button>
-  <button class="category-btn" onclick="filterCategory('secondi', this)">Secondi Piatti</button>
-  <button class="category-btn" onclick="filterCategory('vini', this)">Vini</button>
-  <button class="category-btn" onclick="filterCategory('bevande', this)">Bibite & Birre</button>
-</div>
-
-<div class="products-grid" id="products-container"></div>
-
-<div class="overlay" id="overlay" onclick="toggleCart()"></div>
-
-<div class="cart-sidebar" id="cart-sidebar">
-  <div class="cart-header">
-    <h3>Il Tuo Ordine</h3>
-    <span class="close-cart" onclick="toggleCart()">&times;</span>
-  </div>
-  <div class="cart-items" id="cart-items-container">
-    <p class="cart-empty">Il carrello è vuoto.<br>Aggiungi qualcosa dal menù!</p>
-  </div>
-  <div class="cart-footer">
-    <div class="order-field">
-      <label><i class="fas fa-clock"></i> Orario di Arrivo</label>
-      <select id="order-time">
-        <option value="">-- Seleziona orario --</option>
-      </select>
-    </div>
-    <div class="order-field">
-      <label><i class="fas fa-utensils"></i> Preferenza</label>
-      <div class="choice-group">
-        <button class="choice-btn" id="btn-tavolo" onclick="selectChoice('tavolo')">🪑 Voglio un Tavolo</button>
-        <button class="choice-btn" id="btn-asporto" onclick="selectChoice('asporto')">🛍️ Porto Via</button>
-      </div>
-    </div>
-    <div class="order-field">
-      <label><i class="fas fa-pen"></i> Note</label>
-      <textarea id="order-notes" rows="2" placeholder="Allergie, richieste speciali..."></textarea>
-    </div>
-    <div class="confirm-warning">
-      <i class="fas fa-exclamation-triangle"></i>
-      ATTENZIONE! Attendere risposta di conferma da parte dello staff.
-    </div>
-    <div class="cart-total">
-      <span>Totale:</span>
-      <span id="cart-total-price">€0.00</span>
-    </div>
-    <button class="whatsapp-btn" onclick="sendWhatsAppOrder()">
-      <i class="fab fa-whatsapp"></i> Invia Ordine su WhatsApp
-    </button>
-  </div>
-</div>
-
-<script>
-  const WHATSAPP_NUMBER = "393381412337";
-  let selectedChoice = "";
-
-  const products = [
-    // GASTRONOMIA
-    { id: 1,  name: "Mare caldo",                     price: 15.00, category: "gastronomia",
-      descIt: "Zuppa calda di mare con frutti di mare freschi di giornata.",
-      descEn: "Hot seafood soup with fresh daily catch." },
-    { id: 2,  name: "Polpo e patate",                 price: 14.00, category: "gastronomia",
-      descIt: "Polpo tenero con patate novelle in insalata tiepida.",
-      descEn: "Tender octopus with baby potatoes in a warm salad." },
-    { id: 3,  name: "Impepata di cozze",              price: 12.00, category: "gastronomia",
-      descIt: "Cozze fresche cotte con pepe nero, prezzemolo e limone.",
-      descEn: "Fresh mussels cooked with black pepper, parsley and lemon." },
-    { id: 4,  name: "Cozze ripiene",                  price: 13.00, category: "gastronomia",
-      descIt: "Cozze farcite con pan grattato, aglio, prezzemolo e pomodoro.",
-      descEn: "Stuffed mussels with breadcrumbs, garlic, parsley and tomato." },
-
-    // PRIMI PIATTI
-    { id: 5,  name: "Paccheri gambero e pistacchio",  price: 16.00, category: "primi",
-      descIt: "Paccheri con pomodorini, gambero, stracciatella e granella di pistacchio.",
-      descEn: "Paccheri pasta with cherry tomatoes, shrimp, stracciatella and pistachio crumble." },
-    { id: 6,  name: "Spaghetti allo scoglio",         price: 16.00, category: "primi",
-      descIt: "Spaghetti con frutti di mare misti nel loro sugo naturale.",
-      descEn: "Spaghetti with mixed seafood in their natural sauce." },
-
-    // SECONDI PIATTI
-    { id: 7,  name: "Gran fritto",                    price: 16.00, category: "secondi",
-      descIt: "Calamari, gamberi, acciughe, verdure e patate fritte in pastella croccante.",
-      descEn: "Calamari, shrimp, anchovies, vegetables and potatoes in crispy batter." },
-    { id: 8,  name: "Fritto misto",                   price: 14.00, category: "secondi",
-      descIt: "Calamari, gamberi e acciughe fritti al momento.",
-      descEn: "Freshly fried calamari, shrimp and anchovies." },
-    { id: 9,  name: "Frittura mista di paranza",      price: 13.00, category: "secondi",
-      descIt: "Mix di pescato del giorno fritto in olio di semi selezionato.",
-      descEn: "Mixed daily catch fried in quality seed oil." },
-    { id: 10, name: "Frittura di gamberi",            price: 7.00,  category: "secondi",
-      descIt: "Gamberi freschi infarinati e fritti, serviti con limone.",
-      descEn: "Fresh floured shrimp, fried and served with lemon." },
-    { id: 11, name: "Frittura di acciughe",           price: 6.00,  category: "secondi",
-      descIt: "Acciughe fresche fritte, croccanti e leggere.",
-      descEn: "Fresh fried anchovies, crispy and light." },
-    { id: 12, name: "Anelli di cipolla (6 pezzi)",    price: 6.00,  category: "secondi",
-      descIt: "Anelli di cipolla dorata in pastella leggera e croccante.",
-      descEn: "Golden onion rings in light crispy batter." },
-    { id: 13, name: "Mozzarelline (6 pezzi)",         price: 6.00,  category: "secondi",
-      descIt: "Bocconcini di mozzarella con doppia panatura croccante.",
-      descEn: "Mozzarella bites with double crispy coating." },
-    { id: 14, name: "Crocchette di patate (6 pezzi)", price: 6.00,  category: "secondi",
-      descIt: "Crocchette artigianali di patate con cuore filante.",
-      descEn: "Homemade potato croquettes with melting center." },
-    { id: 15, name: "Patatine fritte (porzione)",     price: 5.00,  category: "secondi",
-      descIt: "Patate fresche tagliate a mano e fritte al momento.",
-      descEn: "Fresh hand-cut potatoes, fried to order." },
-
-    // VINI
-    { id: 16, name: "Vermentino L'Aurora (fermo)",    price: 15.00, category: "vini",
-      descIt: "Vermentino fermo di Francesco, profumato e fresco. Bottiglia.",
-      descEn: "Still Vermentino by Francesco, fragrant and fresh. Bottle." },
-    { id: 17, name: "Vermentino L'Aurora (frizzante)", price: 15.00, category: "vini",
-      descIt: "Vermentino frizzante di Francesco, leggero e dissetante. Bottiglia.",
-      descEn: "Sparkling Vermentino by Francesco, light and refreshing. Bottle." },
-    { id: 18, name: "Vermentino Riflesso",            price: 22.00, category: "vini",
-      descIt: "Vermentino di pregio, strutturato e persistente. Bottiglia.",
-      descEn: "Premium Vermentino, full-bodied and persistent. Bottle." },
-    { id: 19, name: "Prosecco Col de' Salici Extra Dry", price: 18.00, category: "vini",
-      descIt: "Prosecco DOC Extra Dry, fine e delicato. Bottiglia.",
-      descEn: "DOC Extra Dry Prosecco, fine and delicate. Bottle." },
-    { id: 20, name: "Prosecco Col de' Salici Brut",   price: 18.00, category: "vini",
-      descIt: "Prosecco DOC Brut, secco e fresco. Bottiglia.",
-      descEn: "DOC Brut Prosecco, dry and crisp. Bottle." },
-
-    // BIBITE E BIRRE
-    { id: 21, name: "Acqua naturale / frizzante 75cl", price: 2.50, category: "bevande",
-      descIt: "Acqua minerale in bottiglia da 75cl.",
-      descEn: "Mineral water, 75cl bottle." },
-    { id: 22, name: "Bibite in lattina",              price: 2.50, category: "bevande",
-      descIt: "Lattina da 33cl (Coca-Cola, Fanta, ecc.).",
-      descEn: "33cl can (Coca-Cola, Fanta, etc.)." },
-    { id: 23, name: "Birra in bottiglia",             price: 4.00, category: "bevande",
-      descIt: "Birra in bottiglia, fresca di frigo.",
-      descEn: "Bottled beer, chilled." },
-  ];
-
-  let cart = {};
-
-  // Popola orari
-  const sel = document.getElementById('order-time');
-  for (let h = 9; h <= 24; h++) {
-    ['00','30'].forEach(m => {
-      if (h === 24 && m === '30') return;
-      const val = `${String(h).padStart(2,'0')}:${m}`;
-      const opt = document.createElement('option');
-      opt.value = val; opt.textContent = val;
-      sel.appendChild(opt);
-    });
-  }
-
-  function selectChoice(choice) {
-    selectedChoice = choice;
-    document.getElementById('btn-tavolo').classList.toggle('selected', choice === 'tavolo');
-    document.getElementById('btn-asporto').classList.toggle('selected', choice === 'asporto');
-  }
-
-  document.addEventListener("DOMContentLoaded", () => renderProducts(products));
-
-  function renderProducts(list) {
-    const c = document.getElementById('products-container');
-    c.innerHTML = '';
-    list.forEach(p => {
-      const card = document.createElement('div');
-      card.className = 'product-card';
-      card.innerHTML = `
-        <div class="product-info">
-          <div class="product-title">${p.name}</div>
-          <div class="product-desc-it">${p.descIt}</div>
-          <div class="product-desc-en">${p.descEn}</div>
+    <header>
+        <div class="nav-container">
+            <a href="#" class="logo">Da Mario</a>
+            <div class="nav-buttons">
+                <a href="https://www.damario.art" target="_blank" class="home-btn">
+                    <i class="fas fa-home"></i> TORNA ALLA HOME
+                </a>
+                <button class="cart-trigger" onclick="toggleCart()">
+                    <i class="fas fa-shopping-basket"></i> Carrello
+                    <span class="cart-badge" id="cart-badge">0</span>
+                </button>
+            </div>
         </div>
-        <div class="product-footer">
-          <div class="product-price">€${p.price.toFixed(2)}</div>
-          <button class="add-btn" onclick="addToCart(${p.id})">+ Aggiungi</button>
-        </div>`;
-      c.appendChild(card);
-    });
-  }
+    </header>
 
-  function filterCategory(cat, btn) {
-    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderProducts(cat === 'all' ? products : products.filter(p => p.category === cat));
-  }
+    <section class="hero">
+        <h1>Gastronomia & Friggitoria Da Mario</h1>
+        <p>Il mare in tavola: crudi di mare, fritture dorate e primi della tradizione. Solo materie prime freschissime e passione artigianale.</p>
+        <div class="features">
+            <span><i class="fas fa-fire"></i> Frittura Espressa</span>
+            <span><i class="fas fa-fish"></i> Pesce Freschissimo</span>
+            <span><i class="fas fa-bolt"></i> Ordina via WhatsApp</span>
+        </div>
+    </section>
 
-  function toggleCart() {
-    document.getElementById('cart-sidebar').classList.toggle('open');
-    document.getElementById('overlay').classList.toggle('open');
-  }
+    <main class="main-container">
+        <h2 class="section-title">Scegli e Ordina</h2>
+        
+        <div class="categories-bar">
+            <button class="category-btn active" onclick="filterCategory('all', this)">Tutto il Menù</button>
+            <button class="category-btn" onclick="filterCategory('gastronomia', this)">Gastronomia</button>
+            <button class="category-btn" onclick="filterCategory('primi', this)">Primi Piatti</button>
+            <button class="category-btn" onclick="filterCategory('secondi', this)">Secondi Piatti</button>
+            <button class="category-btn" onclick="filterCategory('vini', this)">Vini</button>
+            <button class="category-btn" onclick="filterCategory('bibite', this)">Bibite e Birre</button>
+        </div>
 
-  function addToCart(id) {
-    cart[id] = (cart[id] || 0) + 1;
-    updateCartUI();
-  }
+        <div class="products-grid" id="products-container"></div>
+    </main>
 
-  function changeQuantity(id, delta) {
-    if (!cart[id]) return;
-    cart[id] += delta;
-    if (cart[id] <= 0) delete cart[id];
-    updateCartUI();
-  }
+    <div class="overlay" id="overlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Il Tuo Ordine</h3>
+            <span class="close-cart" onclick="toggleCart()">&times;</span>
+        </div>
+        
+        <div class="cart-items" id="cart-items-container">
+            <!-- dinamicamente popolato -->
+        </div>
 
-  function updateCartUI() {
-    const container = document.getElementById('cart-items-container');
-    container.innerHTML = '';
-    let total = 0, totalItems = 0;
-    if (Object.keys(cart).length === 0) {
-      container.innerHTML = '<p class="cart-empty">Il carrello è vuoto.<br>Aggiungi qualcosa dal menù!</p>';
-    } else {
-      Object.keys(cart).forEach(id => {
-        const p = products.find(x => x.id == id);
-        const qty = cart[id];
-        total += p.price * qty;
-        totalItems += qty;
-        const row = document.createElement('div');
-        row.className = 'cart-item';
-        row.innerHTML = `
-          <div class="cart-item-details">
-            <h4>${p.name}</h4>
-            <small>€${p.price.toFixed(2)} × ${qty} = €${(p.price * qty).toFixed(2)}</small>
-          </div>
-          <div class="cart-item-controls">
-            <button onclick="changeQuantity(${p.id}, -1)">−</button>
-            <span>${qty}</span>
-            <button onclick="changeQuantity(${p.id}, 1)">+</button>
-          </div>`;
-        container.appendChild(row);
-      });
-    }
-    document.getElementById('cart-badge').innerText = totalItems;
-    document.getElementById('cart-total-price').innerText = `€${total.toFixed(2)}`;
-  }
+        <div class="cart-footer">
+            <!-- Orario di arrivo -->
+            <div class="form-group">
+                <label for="arrival-time">🕐 Orario di arrivo</label>
+                <select id="arrival-time" required>
+                    <option value="">-- Seleziona orario --</option>
+                </select>
+            </div>
 
-  function sendWhatsAppOrder() {
-    if (Object.keys(cart).length === 0) { alert("Il carrello è vuoto!"); return; }
-    const orario = document.getElementById('order-time').value;
-    if (!orario) { alert("Seleziona l'orario di arrivo."); return; }
-    if (!selectedChoice) { alert("Indica se vuoi un tavolo o porti via."); return; }
+            <!-- Tavolo / Porto Via -->
+            <div class="form-group">
+                <label>🪑 / 🛍️ Voglio un Tavolo / Porto Via</label>
+                <div class="service-buttons" id="service-type-buttons">
+                    <button type="button" class="service-btn" data-value="Tavolo" onclick="selectServiceType('Tavolo', this)">🪑 Tavolo</button>
+                    <button type="button" class="service-btn" data-value="Porto Via" onclick="selectServiceType('Porto Via', this)">🛍️ Porto Via</button>
+                </div>
+                <input type="hidden" id="service-type" value="">
+            </div>
 
-    let msg = "*NUOVO ORDINE — Da Mario Gastronomia*\n\n";
-    msg += `🕐 *Orario di arrivo:* ${orario}\n`;
-    msg += `${selectedChoice === 'tavolo' ? '🪑' : '🛍️'} *Preferenza:* ${selectedChoice === 'tavolo' ? 'Voglio un Tavolo' : 'Porto Via'}\n\n`;
-    msg += "*Ordine:*\n";
-    let total = 0;
-    Object.keys(cart).forEach(id => {
-      const p = products.find(x => x.id == id);
-      const qty = cart[id];
-      total += p.price * qty;
-      msg += `• *${qty}x* ${p.name} — €${(p.price * qty).toFixed(2)}\n`;
-    });
-    const notes = document.getElementById('order-notes').value.trim();
-    if (notes) msg += `\n*Note:* _${notes}_\n`;
-    msg += `\n*TOTALE: €${total.toFixed(2)}*`;
-    const encoded = msg.replace(/\n/g, '%0A').replace(/ /g, '%20');
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`, '_blank');
-  }
+            <!-- Note -->
+            <div class="form-group">
+                <label for="order-notes">📝 Note (allergie, richieste particolari...)</label>
+                <textarea id="order-notes" rows="2" placeholder="Scrivi qui le tue note..."></textarea>
+            </div>
 
-  // Auto-resize per Google Sites
-  function notifyHeight() {
-    const height = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.scrollHeight);
-    window.parent.postMessage({ type: 'setHeight', height: height }, '*');
-    window.parent.postMessage(JSON.stringify({ height: height }), '*');
-  }
-  new MutationObserver(notifyHeight).observe(document.body, { childList: true, subtree: true, attributes: true });
-  window.addEventListener('load', notifyHeight);
-  window.addEventListener('resize', notifyHeight);
-  setTimeout(notifyHeight, 500);
-  setTimeout(notifyHeight, 1500);
-  setTimeout(notifyHeight, 3000);
-</script>
+            <!-- Avviso giallo -->
+            <div class="warning-box">
+                <span>⚠️</span> Attendo risposta di conferma da parte dello staff
+            </div>
+
+            <div class="cart-total">
+                <span>Totale:</span>
+                <span id="cart-total-price">€0.00</span>
+            </div>
+            <button class="whatsapp-btn" onclick="sendWhatsAppOrder(event)">
+                <i class="fab fa-whatsapp"></i> Invia Ordine su WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Numero WhatsApp (sostituisci con il tuo)
+        const WHATSAPP_NUMBER = "393381412337";
+
+        // Nuovo menù con nomi bilingue
+        const products = [
+            // GASTRONOMIA
+            { id: 1, name_it: "Mare caldo", name_en: "Warm Seafood Salad", price: 15.00, category: "gastronomia", desc: "" },
+            { id: 2, name_it: "Polpo e patate", name_en: "Octopus and Potatoes", price: 14.00, category: "gastronomia", desc: "" },
+            { id: 3, name_it: "Impepata di cozze", name_en: "Peppered Mussels", price: 12.00, category: "gastronomia", desc: "" },
+            { id: 4, name_it: "Cozze ripiene", name_en: "Stuffed Mussels", price: 13.00, category: "gastronomia", desc: "" },
+
+            // PRIMI PIATTI
+            { id: 5, name_it: "Paccheri con pomodorini, gambero, stracciatella e granella di pistacchio", name_en: "Paccheri with cherry tomatoes, shrimp, stracciatella and pistachio crumbs", price: 16.00, category: "primi", desc: "" },
+            { id: 6, name_it: "Spaghetti allo scoglio", name_en: "Spaghetti with mixed seafood", price: 16.00, category: "primi", desc: "" },
+
+            // SECONDI PIATTI
+            { id: 7, name_it: "Gran fritto (calamari, gamberi, acciughe, verdure, patate)", name_en: "Grand Fry (squid, prawns, anchovies, vegetables, potatoes)", price: 16.00, category: "secondi", desc: "" },
+            { id: 8, name_it: "Fritto misto (calamari, gamberi, acciughe)", name_en: "Mixed Fry (squid, prawns, anchovies)", price: 14.00, category: "secondi", desc: "" },
+            { id: 9, name_it: "Frittura mista di paranza", name_en: "Mixed Paranza Fry", price: 13.00, category: "secondi", desc: "" },
+            { id: 10, name_it: "Frittura di gamberi", name_en: "Fried Shrimp", price: 7.00, category: "secondi", desc: "" },
+            { id: 11, name_it: "Frittura di acciughe", name_en: "Fried Anchovies", price: 6.00, category: "secondi", desc: "" },
+            { id: 12, name_it: "Anelli di cipolla (6 pezzi)", name_en: "Onion Rings (6 pcs)", price: 6.00, category: "secondi", desc: "" },
+            { id: 13, name_it: "Mozzarelline (6 pezzi)", name_en: "Fried Mozzarella Balls (6 pcs)", price: 6.00, category: "secondi", desc: "" },
+            { id: 14, name_it: "Crocchette di patate (6 pezzi)", name_en: "Potato Croquettes (6 pcs)", price: 6.00, category: "secondi", desc: "" },
+            { id: 15, name_it: "Patatine fritte (porzione)", name_en: "French Fries (portion)", price: 5.00, category: "secondi", desc: "" },
+
+            // VINI
+            { id: 16, name_it: "Vermentino L’Aurora di Francesco", name_en: "Vermentino L'Aurora by Francesco", price: 15.00, category: "vini", desc: "" },
+            { id: 17, name_it: "Vermentino L’Aurora di Francesco frizzante", name_en: "Vermentino L'Aurora Sparkling", price: 15.00, category: "vini", desc: "" },
+            { id: 18, name_it: "Vermentino Riflesso", name_en: "Vermentino Riflesso", price: 22.00, category: "vini", desc: "" },
+            { id: 19, name_it: "Prosecco Col de’ Salici Extra Dry", name_en: "Prosecco Col de' Salici Extra Dry", price: 18.00, category: "vini", desc: "" },
+            { id: 20, name_it: "Prosecco Col de’ Salici Brut", name_en: "Prosecco Col de' Salici Brut", price: 18.00, category: "vini", desc: "" },
+
+            // BIBITE E BIRRE
+            { id: 21, name_it: "Acqua naturale / frizzante 75 cl", name_en: "Still / Sparkling Water 75 cl", price: 2.50, category: "bibite", desc: "" },
+            { id: 22, name_it: "Bibite in lattina", name_en: "Canned Soft Drinks", price: 2.50, category: "bibite", desc: "" },
+            { id: 23, name_it: "Birra in bottiglia", name_en: "Bottled Beer", price: 4.00, category: "bibite", desc: "" }
+        ];
+
+        let cart = {};
+
+        // Inizializzazione
+        document.addEventListener("DOMContentLoaded", () => {
+            renderProducts(products);
+            populateTimeSelect();
+        });
+
+        function renderProducts(productsList) {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+            
+            productsList.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-info">
+                        <div class="product-title">${p.name_it}</div>
+                        <div class="product-subtitle">${p.name_en}</div>
+                        ${p.desc ? `<div class="product-desc">${p.desc}</div>` : ''}
+                        <div class="product-footer">
+                            <div class="product-price">€${p.price.toFixed(2)}</div>
+                            <button class="add-btn" onclick="addToCart(${p.id})">Aggiungi</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterCategory(category, button) {
+            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            if(category === 'all') {
+                renderProducts(products);
+            } else {
+                const filtered = products.filter(p => p.category === category);
+                renderProducts(filtered);
+            }
+        }
+
+        function toggleCart() {
+            document.getElementById('cart-sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('open');
+        }
+
+        function addToCart(productId) {
+            cart[productId] = (cart[productId] || 0) + 1;
+            updateCartUI();
+        }
+
+        function changeQuantity(productId, amount) {
+            if (cart[productId]) {
+                cart[productId] += amount;
+                if (cart[productId] <= 0) {
+                    delete cart[productId];
+                }
+                updateCartUI();
+            }
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+            
+            let total = 0;
+            let totalItems = 0;
+
+            Object.keys(cart).forEach(id => {
+                const product = products.find(p => p.id == id);
+                const quantity = cart[id];
+                const itemTotal = product.price * quantity;
+                total += itemTotal;
+                totalItems += quantity;
+
+                const itemRow = document.createElement('div');
+                itemRow.className = 'cart-item';
+                itemRow.innerHTML = `
+                    <div class="cart-item-details">
+                        <h4>${product.name_it}</h4>
+                        <small>€${product.price.toFixed(2)} x ${quantity}</small>
+                    </div>
+                    <div class="cart-item-controls">
+                        <button onclick="changeQuantity(${product.id}, -1)">-</button>
+                        <span>${quantity}</span>
+                        <button onclick="changeQuantity(${product.id}, 1)">+</button>
+                    </div>
+                `;
+                container.appendChild(itemRow);
+            });
+
+            document.getElementById('cart-badge').innerText = totalItems;
+            document.getElementById('cart-total-price').innerText = `€${total.toFixed(2)}`;
+        }
+
+        // Gestione tipo servizio (tavolo / porto via)
+        function selectServiceType(type, button) {
+            // Rimuovi attivo da entrambi
+            document.querySelectorAll('#service-type-buttons .service-btn').forEach(btn => btn.classList.remove('active'));
+            // Attiva il bottone cliccato
+            button.classList.add('active');
+            document.getElementById('service-type').value = type;
+        }
+
+        // Popola il select degli orari (09:00 - 24:00, step 30 min)
+        function populateTimeSelect() {
+            const select = document.getElementById('arrival-time');
+            for (let h = 9; h <= 23; h++) {
+                for (let m = 0; m < 60; m += 30) {
+                    const hour = String(h).padStart(2, '0');
+                    const minute = String(m).padStart(2, '0');
+                    const time = `${hour}:${minute}`;
+                    const option = document.createElement('option');
+                    option.value = time;
+                    option.textContent = time;
+                    select.appendChild(option);
+                }
+            }
+            // Aggiungi 24:00
+            const midnight = document.createElement('option');
+            midnight.value = '24:00';
+            midnight.textContent = '24:00';
+            select.appendChild(midnight);
+        }
+
+        // Invio ordine WhatsApp con validazione
+        function sendWhatsAppOrder(event) {
+            event.preventDefault();
+            
+            if (Object.keys(cart).length === 0) {
+                alert("Il tuo carrello è vuoto! Scegli qualcosa dal menù prima di inviare l'ordine.");
+                return;
+            }
+
+            const arrivalTime = document.getElementById('arrival-time').value;
+            const serviceType = document.getElementById('service-type').value;
+
+            if (!arrivalTime) {
+                alert("Per favore seleziona un orario di arrivo.");
+                return;
+            }
+            if (!serviceType) {
+                alert("Per favore scegli tra Tavolo o Porto Via.");
+                return;
+            }
+
+            let message = "*NUOVO ORDINE DA MARIO GASTRONOMIA*\n\n";
+            let total = 0;
+
+            Object.keys(cart).forEach(id => {
+                const product = products.find(p => p.id == id);
+                const quantity = cart[id];
+                const itemTotal = product.price * quantity;
+                total += itemTotal;
+                
+                message += `• *${quantity}x* ${product.name_it} - (€${itemTotal.toFixed(2)})\n`;
+            });
+
+            const notes = document.getElementById('order-notes').value.trim();
+            
+            message += `\n🕐 *ORARIO DI ARRIVO:* ${arrivalTime}`;
+            message += `\n🪑/🛍️ *SERVIZIO:* ${serviceType}`;
+            if (notes) {
+                message += `\n📝 *NOTE:* ${notes}`;
+            }
+            message += `\n\n*TOTALE ORDINE:* €${total.toFixed(2)}`;
+            
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+            
+            window.open(whatsappUrl, '_blank');
+        }
+    </script>
 </body>
 </html>
