@@ -27,7 +27,7 @@
             color: var(--text);
         }
 
-        /* Header fisso */
+        /* Header */
         header {
             background-color: #fff;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
@@ -69,7 +69,7 @@
             font-weight: 600;
             font-size: 14px;
             transition: background 0.3s;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 6px;
         }
@@ -145,7 +145,7 @@
             backdrop-filter: blur(5px);
         }
 
-        /* Main container */
+        /* Main */
         .main-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -160,7 +160,7 @@
             margin-bottom: 25px;
         }
 
-        /* Categorie Filtro */
+        /* Categorie */
         .categories-bar {
             display: flex;
             justify-content: center;
@@ -223,15 +223,6 @@
             color: #777;
             margin-bottom: 15px;
             font-style: italic;
-        }
-
-        .product-desc {
-            font-size: 13px;
-            color: #666;
-            margin-bottom: 20px;
-            line-height: 1.5;
-            height: 60px;
-            overflow: hidden;
         }
 
         .product-footer {
@@ -299,9 +290,9 @@
         }
 
         .cart-items {
-            flex-grow: 0;
-            overflow-y: auto;
+            flex: 0 0 auto;
             max-height: 300px;
+            overflow-y: auto;
         }
 
         .cart-item {
@@ -344,19 +335,19 @@
 
         .form-group {
             margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
         }
 
         .form-group label {
+            display: block;
             font-weight: 600;
-            margin-bottom: 5px;
             color: var(--dark);
+            margin-bottom: 5px;
             font-size: 14px;
         }
 
         .form-group select,
         .form-group textarea {
+            width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 6px;
@@ -481,7 +472,7 @@
 
     <section class="hero">
         <h1>Gastronomia & Friggitoria Da Mario</h1>
-        <p>Il mare in tavola: crudi di mare, fritture dorate e primi della tradizione. Solo materie prime freschissime e passione artigianale.</p>
+        <p>Il meglio del mare e della tradizione: piatti freschissimi, fritture dorate e primi della casa. Solo materie prime di qualità e passione artigianale.</p>
         <div class="features">
             <span><i class="fas fa-fire"></i> Frittura Espressa</span>
             <span><i class="fas fa-fish"></i> Pesce Freschissimo</span>
@@ -504,6 +495,7 @@
         <div class="products-grid" id="products-container"></div>
     </main>
 
+    <!-- Overlay e Carrello -->
     <div class="overlay" id="overlay" onclick="toggleCart()"></div>
     <div class="cart-sidebar" id="cart-sidebar">
         <div class="cart-header">
@@ -512,35 +504,35 @@
         </div>
         
         <div class="cart-items" id="cart-items-container">
-            <!-- dinamicamente popolato -->
+            <!-- Popolato dinamicamente -->
         </div>
 
         <div class="cart-footer">
-            <!-- Orario di arrivo -->
+            <!-- Orario di arrivo (senza icona) -->
             <div class="form-group">
-                <label for="arrival-time">🕐 Orario di arrivo</label>
+                <label for="arrival-time">Orario di arrivo</label>
                 <select id="arrival-time" required>
                     <option value="">-- Seleziona orario --</option>
                 </select>
             </div>
 
-            <!-- Tavolo / Porto Via -->
+            <!-- Tavolo / Porto Via (senza icone) -->
             <div class="form-group">
-                <label>🪑 / 🛍️ Voglio un Tavolo / Porto Via</label>
+                <label>Voglio un Tavolo / Porto Via</label>
                 <div class="service-buttons" id="service-type-buttons">
-                    <button type="button" class="service-btn" data-value="Tavolo" onclick="selectServiceType('Tavolo', this)">🪑 Tavolo</button>
-                    <button type="button" class="service-btn" data-value="Porto Via" onclick="selectServiceType('Porto Via', this)">🛍️ Porto Via</button>
+                    <button type="button" class="service-btn" data-value="Tavolo" onclick="selectServiceType('Tavolo', this)">Tavolo</button>
+                    <button type="button" class="service-btn" data-value="Porto Via" onclick="selectServiceType('Porto Via', this)">Porto Via</button>
                 </div>
                 <input type="hidden" id="service-type" value="">
             </div>
 
-            <!-- Note -->
+            <!-- Note (senza icona) -->
             <div class="form-group">
-                <label for="order-notes">📝 Note (allergie, richieste particolari...)</label>
-                <textarea id="order-notes" rows="2" placeholder="Scrivi qui le tue note..."></textarea>
+                <label for="order-notes">Note</label>
+                <textarea id="order-notes" rows="2" placeholder="Allergie, richieste particolari..."></textarea>
             </div>
 
-            <!-- Avviso giallo -->
+            <!-- Avviso giallo con icona ⚠️ -->
             <div class="warning-box">
                 <span>⚠️</span> Attendo risposta di conferma da parte dello staff
             </div>
@@ -556,43 +548,43 @@
     </div>
 
     <script>
-        // Numero WhatsApp (sostituisci con il tuo)
-        const WHATSAPP_NUMBER = "393381412337";
+        // Numero WhatsApp (sostituire con il proprio)
+        const WHATSAPP_NUMBER = "393381412337"; 
 
-        // Nuovo menù con nomi bilingue
+        // Menù con nomi bilingue e prezzi
         const products = [
             // GASTRONOMIA
-            { id: 1, name_it: "Mare caldo", name_en: "Warm Seafood Salad", price: 15.00, category: "gastronomia", desc: "" },
-            { id: 2, name_it: "Polpo e patate", name_en: "Octopus and Potatoes", price: 14.00, category: "gastronomia", desc: "" },
-            { id: 3, name_it: "Impepata di cozze", name_en: "Peppered Mussels", price: 12.00, category: "gastronomia", desc: "" },
-            { id: 4, name_it: "Cozze ripiene", name_en: "Stuffed Mussels", price: 13.00, category: "gastronomia", desc: "" },
+            { id: 1, name_it: "Mare caldo", name_en: "Warm Seafood Salad", price: 15.00, category: "gastronomia" },
+            { id: 2, name_it: "Polpo e patate", name_en: "Octopus and Potatoes", price: 14.00, category: "gastronomia" },
+            { id: 3, name_it: "Impepata di cozze", name_en: "Peppered Mussels", price: 12.00, category: "gastronomia" },
+            { id: 4, name_it: "Cozze ripiene", name_en: "Stuffed Mussels", price: 13.00, category: "gastronomia" },
 
             // PRIMI PIATTI
-            { id: 5, name_it: "Paccheri con pomodorini, gambero, stracciatella e granella di pistacchio", name_en: "Paccheri with cherry tomatoes, shrimp, stracciatella and pistachio crumbs", price: 16.00, category: "primi", desc: "" },
-            { id: 6, name_it: "Spaghetti allo scoglio", name_en: "Spaghetti with mixed seafood", price: 16.00, category: "primi", desc: "" },
+            { id: 5, name_it: "Paccheri con pomodorini, gambero, stracciatella e granella di pistacchio", name_en: "Paccheri with cherry tomatoes, shrimp, stracciatella and pistachio crumbs", price: 16.00, category: "primi" },
+            { id: 6, name_it: "Spaghetti allo scoglio", name_en: "Spaghetti with mixed seafood", price: 16.00, category: "primi" },
 
             // SECONDI PIATTI
-            { id: 7, name_it: "Gran fritto (calamari, gamberi, acciughe, verdure, patate)", name_en: "Grand Fry (squid, prawns, anchovies, vegetables, potatoes)", price: 16.00, category: "secondi", desc: "" },
-            { id: 8, name_it: "Fritto misto (calamari, gamberi, acciughe)", name_en: "Mixed Fry (squid, prawns, anchovies)", price: 14.00, category: "secondi", desc: "" },
-            { id: 9, name_it: "Frittura mista di paranza", name_en: "Mixed Paranza Fry", price: 13.00, category: "secondi", desc: "" },
-            { id: 10, name_it: "Frittura di gamberi", name_en: "Fried Shrimp", price: 7.00, category: "secondi", desc: "" },
-            { id: 11, name_it: "Frittura di acciughe", name_en: "Fried Anchovies", price: 6.00, category: "secondi", desc: "" },
-            { id: 12, name_it: "Anelli di cipolla (6 pezzi)", name_en: "Onion Rings (6 pcs)", price: 6.00, category: "secondi", desc: "" },
-            { id: 13, name_it: "Mozzarelline (6 pezzi)", name_en: "Fried Mozzarella Balls (6 pcs)", price: 6.00, category: "secondi", desc: "" },
-            { id: 14, name_it: "Crocchette di patate (6 pezzi)", name_en: "Potato Croquettes (6 pcs)", price: 6.00, category: "secondi", desc: "" },
-            { id: 15, name_it: "Patatine fritte (porzione)", name_en: "French Fries (portion)", price: 5.00, category: "secondi", desc: "" },
+            { id: 7, name_it: "Gran fritto (calamari, gamberi, acciughe, verdure, patate)", name_en: "Grand Fry (squid, prawns, anchovies, vegetables, potatoes)", price: 16.00, category: "secondi" },
+            { id: 8, name_it: "Fritto misto (calamari, gamberi, acciughe)", name_en: "Mixed Fry (squid, prawns, anchovies)", price: 14.00, category: "secondi" },
+            { id: 9, name_it: "Frittura mista di paranza", name_en: "Mixed Paranza Fry", price: 13.00, category: "secondi" },
+            { id: 10, name_it: "Frittura di gamberi", name_en: "Fried Shrimp", price: 7.00, category: "secondi" },
+            { id: 11, name_it: "Frittura di acciughe", name_en: "Fried Anchovies", price: 6.00, category: "secondi" },
+            { id: 12, name_it: "Anelli di cipolla (6 pezzi)", name_en: "Onion Rings (6 pcs)", price: 6.00, category: "secondi" },
+            { id: 13, name_it: "Mozzarelline (6 pezzi)", name_en: "Fried Mozzarella Balls (6 pcs)", price: 6.00, category: "secondi" },
+            { id: 14, name_it: "Crocchette di patate (6 pezzi)", name_en: "Potato Croquettes (6 pcs)", price: 6.00, category: "secondi" },
+            { id: 15, name_it: "Patatine fritte (porzione)", name_en: "French Fries (portion)", price: 5.00, category: "secondi" },
 
             // VINI
-            { id: 16, name_it: "Vermentino L’Aurora di Francesco", name_en: "Vermentino L'Aurora by Francesco", price: 15.00, category: "vini", desc: "" },
-            { id: 17, name_it: "Vermentino L’Aurora di Francesco frizzante", name_en: "Vermentino L'Aurora Sparkling", price: 15.00, category: "vini", desc: "" },
-            { id: 18, name_it: "Vermentino Riflesso", name_en: "Vermentino Riflesso", price: 22.00, category: "vini", desc: "" },
-            { id: 19, name_it: "Prosecco Col de’ Salici Extra Dry", name_en: "Prosecco Col de' Salici Extra Dry", price: 18.00, category: "vini", desc: "" },
-            { id: 20, name_it: "Prosecco Col de’ Salici Brut", name_en: "Prosecco Col de' Salici Brut", price: 18.00, category: "vini", desc: "" },
+            { id: 16, name_it: "Vermentino L’Aurora di Francesco", name_en: "Vermentino L'Aurora by Francesco", price: 15.00, category: "vini" },
+            { id: 17, name_it: "Vermentino L’Aurora di Francesco frizzante", name_en: "Sparkling Vermentino L'Aurora", price: 15.00, category: "vini" },
+            { id: 18, name_it: "Vermentino Riflesso", name_en: "Vermentino Riflesso", price: 22.00, category: "vini" },
+            { id: 19, name_it: "Prosecco Col de’ Salici Extra Dry", name_en: "Prosecco Col de' Salici Extra Dry", price: 18.00, category: "vini" },
+            { id: 20, name_it: "Prosecco Col de’ Salici Brut", name_en: "Prosecco Col de' Salici Brut", price: 18.00, category: "vini" },
 
             // BIBITE E BIRRE
-            { id: 21, name_it: "Acqua naturale / frizzante 75 cl", name_en: "Still / Sparkling Water 75 cl", price: 2.50, category: "bibite", desc: "" },
-            { id: 22, name_it: "Bibite in lattina", name_en: "Canned Soft Drinks", price: 2.50, category: "bibite", desc: "" },
-            { id: 23, name_it: "Birra in bottiglia", name_en: "Bottled Beer", price: 4.00, category: "bibite", desc: "" }
+            { id: 21, name_it: "Acqua naturale / frizzante 75 cl", name_en: "Still / Sparkling Water 75 cl", price: 2.50, category: "bibite" },
+            { id: 22, name_it: "Bibite in lattina", name_en: "Canned Soft Drinks", price: 2.50, category: "bibite" },
+            { id: 23, name_it: "Birra in bottiglia", name_en: "Bottled Beer", price: 4.00, category: "bibite" }
         ];
 
         let cart = {};
@@ -614,7 +606,6 @@
                     <div class="product-info">
                         <div class="product-title">${p.name_it}</div>
                         <div class="product-subtitle">${p.name_en}</div>
-                        ${p.desc ? `<div class="product-desc">${p.desc}</div>` : ''}
                         <div class="product-footer">
                             <div class="product-price">€${p.price.toFixed(2)}</div>
                             <button class="add-btn" onclick="addToCart(${p.id})">Aggiungi</button>
@@ -691,16 +682,14 @@
             document.getElementById('cart-total-price').innerText = `€${total.toFixed(2)}`;
         }
 
-        // Gestione tipo servizio (tavolo / porto via)
+        // Gestione selezione Tavolo / Porto Via
         function selectServiceType(type, button) {
-            // Rimuovi attivo da entrambi
             document.querySelectorAll('#service-type-buttons .service-btn').forEach(btn => btn.classList.remove('active'));
-            // Attiva il bottone cliccato
             button.classList.add('active');
             document.getElementById('service-type').value = type;
         }
 
-        // Popola il select degli orari (09:00 - 24:00, step 30 min)
+        // Popola il select orario (09:00 - 24:00, step 30 min)
         function populateTimeSelect() {
             const select = document.getElementById('arrival-time');
             for (let h = 9; h <= 23; h++) {
@@ -721,7 +710,7 @@
             select.appendChild(midnight);
         }
 
-        // Invio ordine WhatsApp con validazione
+        // Invio ordine WhatsApp con validazione e dati aggiuntivi
         function sendWhatsAppOrder(event) {
             event.preventDefault();
             
@@ -756,13 +745,14 @@
 
             const notes = document.getElementById('order-notes').value.trim();
             
-            message += `\n🕐 *ORARIO DI ARRIVO:* ${arrivalTime}`;
-            message += `\n🪑/🛍️ *SERVIZIO:* ${serviceType}`;
+            message += `\n*Orario di arrivo:* ${arrivalTime}`;
+            message += `\n*Servizio:* ${serviceType}`;
             if (notes) {
-                message += `\n📝 *NOTE:* ${notes}`;
+                message += `\n*Note:* ${notes}`;
             }
             message += `\n\n*TOTALE ORDINE:* €${total.toFixed(2)}`;
-            
+            message += `\n\n⚠️ Attendo risposta di conferma da parte dello staff`;
+
             const encodedMessage = encodeURIComponent(message);
             const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
             
